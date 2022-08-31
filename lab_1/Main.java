@@ -13,6 +13,9 @@ class Main {
             double serviceTime = sc.nextDouble();
 
             Customer customer = new Customer(arrivalTime, serviceTime);
+            if (customerCount == 1){
+                server = new Server(name, arrivalTime);
+            }
             if (server.isFreeAt(customer.getArrivalTime())){
                 server = server.serve(customer);
                 System.out.println("customer " + customerCount + " served by " + server);

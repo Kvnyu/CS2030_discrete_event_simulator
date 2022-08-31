@@ -3,8 +3,7 @@ class Server {
     private final Double availableTime;
     private static final double THRESHOLD = 1E-15;
     Server(String name) {
-        this.name = name;
-        this.availableTime = 1.0;
+        this(name, 1.0);
     }
 
     Server(String name, double availableTime){
@@ -17,7 +16,7 @@ class Server {
     }
 
     Server serve(Customer customer){
-        return new Server(this.name, this.availableTime + customer.getServiceTime());
+        return new Server(this.name, customer.getArrivalTime() + customer.getServiceTime());
     }
 
     @Override
