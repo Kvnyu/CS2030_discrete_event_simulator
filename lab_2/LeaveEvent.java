@@ -1,6 +1,7 @@
 class LeaveEvent extends Event {
-    LeaveEvent(Customer customer) {
-        super(customer);
+
+    LeaveEvent(Customer customer, Server server) {
+        super(customer, server);
     }
 
     @Override

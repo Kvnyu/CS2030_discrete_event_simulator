@@ -13,12 +13,11 @@ class Main {
             double serviceTime = sc.nextDouble();
 
             Customer customer = new Customer(arrivalTime, serviceTime, customerCount);
-            ArriveEvent arriveEvent = new ArriveEvent(customer);
+            ArriveEvent arriveEvent = new ArriveEvent(customer, server);
             System.out.println(arriveEvent);
-
-            ServerEvent serverEvent = server.handleCustomer(customer);
-            server = serverEvent.getServer();
-            System.out.println(serverEvent.getEvent());
+            Event nextEvent = arriveEvent.getNextEvent();
+            System.out.println(nextEvent);
+            server = nextEvent.getServer();
         }
 
         sc.close();

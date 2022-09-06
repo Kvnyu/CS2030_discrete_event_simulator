@@ -1,9 +1,6 @@
 class ServeEvent extends Event {
-    private final Server server;
-
     ServeEvent(Customer customer, Server server) {
-        super(customer);
-        this.server = server;
+        super(customer, server);
     }
 
     @Override

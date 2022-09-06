@@ -16,15 +16,11 @@ class Server {
         return availableTime - arrivalTime < THRESHOLD;
     }
 
-    ServerEvent handleCustomer(Customer customer) {
+    Server handleCustomer(Customer customer) {
         if (this.isFreeAt(customer.getArrivalTime())) {
-            ServeEvent serveEvent = new ServeEvent(customer, this);
-            Server server = this.serve(customer);
-            return new ServerEvent(server, serveEvent);
-        } else {
-            LeaveEvent leaveEvent = new LeaveEvent(customer);
-            return new ServerEvent(this, leaveEvent);
+            return this.serve(customer);
         }
+        return this;
     }
 
     Server serve(Customer customer) {
