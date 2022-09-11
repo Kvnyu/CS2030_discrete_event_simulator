@@ -7,11 +7,7 @@ class ServeEvent extends Event {
 
     @Override
     Optional<Event> getNextEvent() {
-        if (this.server.isFreeAt(customer.getArrivalTime())) {
-            Server server = this.server.serve(customer);
-            return Optional.of(new ServeEvent(customer, server));
-        }
-        return Optional.of(new LeaveEvent(this.customer, server));
+        return Optional.of(new DoneEvent(customer, server));
     }
 
     @Override
