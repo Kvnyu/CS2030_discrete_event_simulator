@@ -1,12 +1,10 @@
-import java.util.Optional;
-
 class Event {
     protected final Customer customer;
     protected final Server server;
     protected final boolean hasNextEvent;
     protected final int priority;
-    static final int LOW_PRIORITY = 0;
-    static final int HIGH_PRIORITY = 1;
+    protected static final int LOW_PRIORITY = 0;
+    protected static final int HIGH_PRIORITY = 1;
 
     Event(Customer customer, Server server) {
         this(customer, server, false, HIGH_PRIORITY);
@@ -33,10 +31,6 @@ class Event {
 
     protected boolean hasNextEvent() {
         return this.hasNextEvent;
-    }
-
-    Optional<Event> getNextEvent() {
-        return Optional.empty();
     }
 
     protected int getPriority() {

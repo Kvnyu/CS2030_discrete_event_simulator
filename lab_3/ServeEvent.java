@@ -1,13 +1,11 @@
-import java.util.Optional;
-
-class ServeEvent extends Event {
+class ServeEvent extends NonTerminalEvent {
     ServeEvent(Customer customer, Server server) {
-        super(customer, server, true);
+        super(customer, server);
     }
 
     @Override
-    Optional<Event> getNextEvent() {
-        return Optional.of(new DoneEvent(customer, server));
+    Event getNextEvent() {
+        return new DoneEvent(customer, server);
     }
 
     @Override

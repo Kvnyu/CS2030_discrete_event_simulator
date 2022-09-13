@@ -22,6 +22,10 @@ class Main {
             queue = pair.second();
 
             System.out.println(event);
+            if (event.hasNextEvent) {
+                NonTerminalEvent nonTerminalEvent = (NonTerminalEvent) event;
+                queue = queue.add(nonTerminalEvent.getNextEvent());
+            }
         }
 
         sc.close();
