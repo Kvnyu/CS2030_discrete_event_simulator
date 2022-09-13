@@ -2,7 +2,7 @@ import java.util.Optional;
 
 class ArriveEvent extends Event {
     ArriveEvent(Customer customer, Server server) {
-        super(customer, server, true, Event.Priority.Low);
+        super(customer, server, true, LOW_PRIORITY);
     }
 
     @Override
