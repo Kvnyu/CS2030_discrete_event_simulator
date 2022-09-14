@@ -5,7 +5,7 @@ class EventComparator implements Comparator<Event> {
         if (e1.getEventTime() == e2.getEventTime()) {
             return e2.getPriority() - e1.getPriority() > 0 ? 1 : -1;
         } else {
-            return e2.getCustomer().getArrivalTime() - e1.getCustomer().getArrivalTime() > 0
+            return e2.getEventTime() - e1.getEventTime() > 0
                     ? -1
                     : 1;
         }
