@@ -15,4 +15,8 @@ class ServeEvent extends NonTerminalEvent {
                 this.getCustomer(),
                 this.server);
     }
+
+    double getEventTime() {
+        return this.getCustomer().getArrivalTime();
+    }
 }

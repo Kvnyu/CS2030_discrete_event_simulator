@@ -10,4 +10,8 @@ class LeaveEvent extends Event {
                 this.getCustomer().getArrivalTime(),
                 this.getCustomer());
     }
+
+    double getEventTime() {
+        return this.getCustomer().getArrivalTime();
+    }
 }

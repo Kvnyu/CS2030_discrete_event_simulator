@@ -1,4 +1,4 @@
-class Event {
+abstract class Event {
     protected final Customer customer;
     protected final Server server;
     protected final boolean hasNextEvent;
@@ -20,6 +20,8 @@ class Event {
         this.server = server;
         this.hasNextEvent = hasNextEvent;
     }
+
+    abstract double getEventTime();
 
     protected Customer getCustomer() {
         return this.customer;

@@ -11,4 +11,8 @@ class DoneEvent extends Event {
                 this.getCustomer().getCustomerNumber(),
                 this.getServer());
     }
+
+    double getEventTime() {
+        return this.getCustomer().getDoneTime();
+    }
 }
