@@ -6,6 +6,8 @@ class LeaveEvent extends Event {
 
     @Override
     public String toString() {
-        return String.format("%s %s leaves", this.getCustomer().getArrivalTime(), this.getCustomer());
+        return String.format("%s %s leaves",
+                this.getCustomer().getArrivalTime(),
+                this.getCustomer());
     }
 }
