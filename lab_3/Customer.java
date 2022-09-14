@@ -1,3 +1,6 @@
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 class Customer {
     private final double arrivalTime;
     private final double serviceTime;
@@ -13,6 +16,11 @@ class Customer {
         return this.arrivalTime;
     }
 
+    String getFormattedArrivalTime() {
+        NumberFormat formatter = new DecimalFormat("#0.00");
+        return formatter.format(this.getArrivalTime());
+    }
+
     double getServiceTime() {
         return this.serviceTime;
     }
@@ -21,8 +29,13 @@ class Customer {
         return this.customerNumber;
     }
 
-    double getLeaveTime() {
+    double getDoneTime() {
         return this.arrivalTime + this.serviceTime;
+    }
+
+    String getFormattedDoneTime() {
+        NumberFormat formatter = new DecimalFormat("#0.00");
+        return formatter.format(this.getDoneTime());
     }
 
     @Override

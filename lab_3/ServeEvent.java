@@ -10,6 +10,7 @@ class ServeEvent extends NonTerminalEvent {
 
     @Override
     public String toString() {
-        return String.format("%s served by %s", this.getCustomer(), this.server);
+        return String.format("%s %s served by %s", this.getCustomer().getArrivalTime(), this.getCustomer(),
+                this.server);
     }
 }

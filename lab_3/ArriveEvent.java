@@ -14,6 +14,8 @@ class ArriveEvent extends NonTerminalEvent {
 
     @Override
     public String toString() {
-        return String.format("%s arrives", this.getCustomer());
+        return String.format("%s %s %s arrives", this.getCustomer().getFormattedArrivalTime(),
+                this.getCustomer().getArrivalTime(),
+                this.getCustomer());
     }
 }

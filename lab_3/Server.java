@@ -24,7 +24,7 @@ class Server {
     }
 
     Server serve(Customer customer) {
-        return new Server(this.name, customer.getLeaveTime());
+        return new Server(this.name, customer.getDoneTime());
     }
 
     @Override
