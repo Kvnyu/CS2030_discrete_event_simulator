@@ -4,7 +4,7 @@ class ServeEvent extends NonTerminalEvent {
     }
 
     @Override
-    Event getNextEvent() {
+    Event getNextEvent(Server server) {
         return new DoneEvent(customer, server);
     }
 

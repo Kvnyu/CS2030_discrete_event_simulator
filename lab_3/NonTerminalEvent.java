@@ -7,5 +7,5 @@ abstract class NonTerminalEvent extends Event {
         super(customer, server, true, priority);
     }
 
-    abstract Event getNextEvent();
+    abstract Event getNextEvent(Server server);
 }

@@ -4,9 +4,9 @@ class ArriveEvent extends NonTerminalEvent {
     }
 
     @Override
-    Event getNextEvent() {
-        if (this.server.isFreeAt(customer.getArrivalTime())) {
-            Server server = this.server.serve(customer);
+    Event getNextEvent(Server server) {
+        if (server.isFreeAt(customer.getArrivalTime())) {
+            server = server.serve(customer);
             return new ServeEvent(customer, server);
         }
         return new LeaveEvent(this.customer, server);

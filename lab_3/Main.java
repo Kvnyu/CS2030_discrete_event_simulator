@@ -19,12 +19,15 @@ class Main {
         while (!queue.isEmpty()) {
             Pair<Event, PQ<Event>> pair = queue.poll();
             Event event = pair.first();
+            server = event.getServer();
             queue = pair.second();
 
             System.out.println(event);
             if (event.hasNextEvent) {
                 NonTerminalEvent nonTerminalEvent = (NonTerminalEvent) event;
-                queue = queue.add(nonTerminalEvent.getNextEvent());
+                Event nextEvent = nonTerminalEvent.getNextEvent(server);
+                server = nextEvent.getServer();
+                queue = queue.add(nextEvent);
             }
         }
 
