@@ -1,21 +1,18 @@
-import java.util.Iterator;
-
 class Booking implements Comparable<Booking> {
     private final Driver driver;
     private final Request request;
+    private final Service serviceWithLowestFare;
 
     public Booking(Driver driver, Request request) {
         this.driver = driver;
         this.request = request;
+        this.serviceWithLowestFare = getServiceWithLowestFare(request, driver);
     }
 
     @Override
     public int compareTo(Booking other) {
-        Service thisLowestFareService = this.getServiceWithLowestFare(this.request, this.driver);
-        Service otherLowestFareService = this.getServiceWithLowestFare(
-                other.getRequest(), other.getDriver());
-        int thisLowestFare = this.request.computeFare(thisLowestFareService);
-        int otherLowestFare = this.request.computeFare(otherLowestFareService);
+        int thisLowestFare = this.getFare();
+        int otherLowestFare = other.getFare();
 
         if (thisLowestFare == otherLowestFare) {
             return this.driver.getPassengerWaitingTime()
@@ -24,16 +21,17 @@ class Booking implements Comparable<Booking> {
         return thisLowestFare < otherLowestFare ? -1 : 1;
     }
 
+    protected Service getServiceWithLowestFare() {
+        return this.serviceWithLowestFare;
+    }
+
     private Service getServiceWithLowestFare(Request request, Driver driver) {
-        int minFare = 0;
-        Iterator<Service> driverServicesIter = driver.getServices().iterator();
-        Service currentBestService = driverServicesIter.next();
-        while (driverServicesIter.hasNext()) {
-            int currentBestFare = request.computeFare(currentBestService);
-            Service service = driverServicesIter.next();
+        Service currentBestService = driver.getServices().get(0);
+        int currentBestFare = request.computeFare(currentBestService);
+        for (Service service : driver.getServices()) {
             int fare = request.computeFare(service);
             if (fare < currentBestFare) {
-                minFare = fare;
+                currentBestFare = fare;
                 currentBestService = service;
             }
         }
@@ -48,12 +46,15 @@ class Booking implements Comparable<Booking> {
         return this.request;
     }
 
+    protected int getFare() {
+        return this.request.computeFare(this.serviceWithLowestFare);
+    }
+
     @Override
     public String toString() {
-        Service lowestFareService = this.getServiceWithLowestFare(this.request, this.driver);
         return String.format("$%.2f using %s (%s)",
-                (float) this.request.computeFare(lowestFareService) / 100, this.driver,
-                lowestFareService);
+                (float) this.request.computeFare(serviceWithLowestFare) / 100, this.driver,
+                serviceWithLowestFare);
 
     }
 }
