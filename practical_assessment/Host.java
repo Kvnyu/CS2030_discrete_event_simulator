@@ -33,7 +33,6 @@ abstract class Host {
         for (String host : additionalConnections) {
             completedHandshakes = completedHandshakes.add(host);
         }
-        System.out.println(completedHandshakes);
         this.completedHandshakes = completedHandshakes;
     }
 
