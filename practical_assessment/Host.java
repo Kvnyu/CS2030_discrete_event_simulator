@@ -13,7 +13,7 @@ abstract class Host {
     }
 
     Host(String name, String pagerName, Boolean connectionEstablished) {
-        this(name, pagerName, false, new ImList<String>());
+        this(name, pagerName, connectionEstablished, new ImList<String>());
     }
 
     Host(String name, String pagerName, Boolean connectionEstablished, ImList<String> additionalConnections) {
@@ -38,17 +38,15 @@ abstract class Host {
     }
 
     void broadcast() {
-        for (String host : this.completedHandshakes) {
-            System.out.println(String.format("%s: beep", host));
-        }
-    }
-
-    PagerPreack rcv() {
-        return new PagerPreack(this.pagerName, this.name);
+        String.join(": beep\n", this.completedHandshakes);
     }
 
     protected final String getName() {
         return this.name;
+    }
+
+    protected final String getPagerName() {
+        return this.pagerName;
     }
 
     @Override
@@ -57,7 +55,7 @@ abstract class Host {
             Host newOther = (Host) other;
             return newOther.name == this.name;
         }
-        return other.equals(this);
+        return false;
     }
 
     @Override

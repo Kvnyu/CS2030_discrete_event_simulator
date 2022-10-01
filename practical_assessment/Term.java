@@ -12,13 +12,6 @@ abstract class Term {
         this.transmitterName = transmitterName;
     }
 
-    Host snd(Transmitter transmitter) {
-        if (transmitter.connectionEstablished()) {
-            return new Transmitter(transmitter.getName(), this.name, true, transmitter.getConnections());
-        }
-        return new Transmitter(transmitter.getName(), this.name);
-    }
-
     protected String getTransmitterName() {
         return this.transmitterName;
     }
@@ -33,7 +26,7 @@ abstract class Term {
             Term newOther = (Term) other;
             return newOther.name == this.name;
         }
-        return other.equals(this);
+        return false;
     }
 
     @Override

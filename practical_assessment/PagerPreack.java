@@ -1,14 +1,14 @@
-class PagerPreack extends Pager{
+class PagerPreack extends Term {
 
-    PagerPreack(String name){
+    PagerPreack(String name) {
         super(name);
     }
 
-    PagerPreack(String name, String transmitterName){
+    PagerPreack(String name, String transmitterName) {
         super(name, transmitterName);
     }
 
-    Host ack(){
-        return new Transmitter(this.getName(), this.getTransmitterName(), true);
+    ConnectedHost ack() {
+        return new ConnectedHost(this.getTransmitterName(), this.getName(), true);
     }
 }
