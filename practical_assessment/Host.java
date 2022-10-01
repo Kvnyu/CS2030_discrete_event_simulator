@@ -16,17 +16,24 @@ abstract class Host {
         this(name, pagerName, connectionEstablished, new ImList<String>());
     }
 
-    Host(String name, String pagerName, Boolean connectionEstablished, ImList<String> additionalConnections) {
+    Host(String name, String pagerName, Boolean connectionEstablished,
+            ImList<String> additionalConnections) {
+        this(name, pagerName, connectionEstablished, "", additionalConnections);
+    }
+
+    Host(String name, String pagerName, Boolean connectionEstablished, String connectedPager,
+            ImList<String> additionalConnections) {
         this.name = name;
         this.pagerName = pagerName;
         this.connectionEstablished = connectionEstablished;
         ImList<String> completedHandshakes = new ImList<String>();
-        if (this.connectionEstablished) {
-            completedHandshakes = completedHandshakes.add(name);
+        if (connectedPager != "") {
+            completedHandshakes = completedHandshakes.add(connectedPager);
         }
         for (String host : additionalConnections) {
             completedHandshakes = completedHandshakes.add(host);
         }
+        System.out.println(completedHandshakes);
         this.completedHandshakes = completedHandshakes;
     }
 
@@ -39,7 +46,10 @@ abstract class Host {
     }
 
     void broadcast() {
-        String.join(": beep\n", this.completedHandshakes);
+        for (String name : this.completedHandshakes) {
+            System.out.println(name + ":beep");
+        }
+        System.out.println(this.pagerName + ":beep");
     }
 
     protected final String getName() {
