@@ -9,7 +9,6 @@ class Pager extends Term {
 
     ReceivedTransmitter snd(Host host) {
         if (host.connectionEstablished()) {
-            System.out.println("connection established" + this.getName());
             return new ReceivedTransmitter(host.getName(), this.getName(), true, host.getPagerName(),
                     host.getConnections());
         }

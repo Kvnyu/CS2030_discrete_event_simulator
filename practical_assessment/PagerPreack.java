@@ -12,7 +12,6 @@ class PagerPreack extends Term {
     }
 
     ConnectedHost ack() {
-        System.out.println("ack" + this.completedHandshakes);
         return new ConnectedHost(this.getTransmitterName(), this.getName(), true, this.completedHandshakes);
     }
 }

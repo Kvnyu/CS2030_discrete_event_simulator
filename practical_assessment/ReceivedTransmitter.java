@@ -21,7 +21,6 @@ class ReceivedTransmitter extends Host {
     }
 
     PagerPreack rcv() {
-        System.out.println(this.getConnections());
         return new PagerPreack(this.getPagerName(), this.getName(), this.getConnections());
     }
 }
