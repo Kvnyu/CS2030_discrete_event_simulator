@@ -1,4 +1,4 @@
-class ConnectedHost extends Host {
+class ConnectedHost extends SendableHost {
     ConnectedHost(String name) {
         super(name);
     }

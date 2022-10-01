@@ -1,4 +1,4 @@
-class Transmitter extends Host {
+class Transmitter extends SendableHost {
     Transmitter(String name) {
         super(name);
     }

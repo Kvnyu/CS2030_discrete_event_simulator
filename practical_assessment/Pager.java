@@ -7,9 +7,9 @@ class Pager extends Term {
         super(name, transmitterName);
     }
 
-    ReceivedTransmitter snd(Host host) {
+    ReceivedTransmitter snd(SendableHost host) {
         if (host.connectionEstablished()) {
-            return new ReceivedTransmitter(host.getName(), this.getName(), true, host.getPagerName(),
+            return new ReceivedTransmitter(host.getName(), this.getName(), false, host.getPagerName(),
                     host.getConnections());
         }
         return new ReceivedTransmitter(host.getName(), this.getName());

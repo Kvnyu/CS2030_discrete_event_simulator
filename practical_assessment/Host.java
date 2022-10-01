@@ -27,11 +27,11 @@ abstract class Host {
         this.pagerName = pagerName;
         this.connectionEstablished = connectionEstablished;
         ImList<String> completedHandshakes = new ImList<String>();
-        if (connectedPager != "") {
-            completedHandshakes = completedHandshakes.add(connectedPager);
-        }
         for (String host : additionalConnections) {
             completedHandshakes = completedHandshakes.add(host);
+        }
+        if (connectedPager != "") {
+            completedHandshakes = completedHandshakes.add(connectedPager);
         }
         this.completedHandshakes = completedHandshakes;
     }
@@ -48,7 +48,9 @@ abstract class Host {
         for (String name : this.completedHandshakes) {
             System.out.println(name + ":beep");
         }
-        System.out.println(this.pagerName + ":beep");
+        if (this.connectionEstablished) {
+            System.out.println(this.pagerName + ":beep");
+        }
     }
 
     protected final String getName() {
