@@ -20,13 +20,14 @@ abstract class Host {
         this.name = name;
         this.pagerName = pagerName;
         this.connectionEstablished = connectionEstablished;
-        this.completedHandshakes = new ImList<String>();
+        ImList<String> completedHandshakes = new ImList<String>();
         if (this.connectionEstablished) {
-            this.completedHandshakes.add(name);
+            completedHandshakes = completedHandshakes.add(name);
         }
         for (String host : additionalConnections) {
-            this.completedHandshakes.add(host);
+            completedHandshakes = completedHandshakes.add(host);
         }
+        this.completedHandshakes = completedHandshakes;
     }
 
     ImList<String> getConnections() {
