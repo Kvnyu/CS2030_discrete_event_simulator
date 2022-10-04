@@ -10,9 +10,9 @@ class Simulator {
     }
 
     String simulate() {
-        int customerCount = 0;
+        int customerCount = 1;
         PQ<Event> queue = new PQ<Event>(new EventComparator());
-        ImList<Server> servers = new ImList<Server>();
+        ServerBalancer serverBalancer = new ServerBalancer(this.numOfServers, this.qmax);
 
         for (Pair<Double, Double> customerPair : this.inputTimes) {
 
@@ -24,27 +24,26 @@ class Simulator {
             customerCount += 1;
         }
 
-        for (int i; i < this.numOfServers; i++) {
-            servers.add(new Server(Integer.toString(i), this.qmax));
-        }
-
         while (!queue.isEmpty()) {
             Pair<Event, PQ<Event>> pair = queue.poll();
-            Event event = pair.first();
 
+            Event event = pair.first();
             queue = pair.second();
 
             // TODO: Change the class signature of getNextEvent to require servers list
-            Pair<Event, ImList<Server>> eventServers = event.getNextEvent(servers);
+            Pair<Event, ServerBalancer> eventServers = event.getNextEvent(serverBalancer);
             Event nextEvent = eventServers.first();
-            servers = eventServers.second();
+            serverBalancer = eventServers.second();
             // TODO: Create a new Terminal event attribute on Event, and TerminalEvent class
             // that all terminal events return as "getNextEvent"
-            if (!eventServers.second().isTerminalEvent()) {
-                queue.add(eventServers.second());
+
+            if (!nextEvent.isTerminalEvent()) {
+                queue = queue.add(nextEvent);
             }
 
-            System.out.println(event);
+            if (!event.isTerminalEvent()) {
+                System.out.println(event);
+            }
         }
         return "";
     }

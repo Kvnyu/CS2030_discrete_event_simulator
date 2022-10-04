@@ -4,12 +4,13 @@ class ArriveEvent extends Event {
     }
 
     @Override
-    Event getNextEvent() {
-        if (server.isFreeAt(customer.getArrivalTime())) {
-            server = server.serve(customer);
-            return new ServeEvent(customer, server);
+    Pair<Event, ServerBalancer> getNextEvent(ServerBalancer serverBalancer) {
+        if (serverBalancer.isThereAServerFreeAt(customer.getArrivalTime())) {
+            return serverBalancer.serve(customer);
+        } else if (serverBalancer.isThereServerWithSpaceInQueue()) {
+            return serverBalancer.addToQueue(customer);
         }
-        return new LeaveEvent(this.customer, server);
+        return new Pair<Event, ServerBalancer>(new LeaveEvent(this.customer), serverBalancer);
     }
 
     @Override

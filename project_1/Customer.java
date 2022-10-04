@@ -17,7 +17,7 @@ class Customer {
     }
 
     String getFormattedArrivalTime() {
-        NumberFormat formatter = new DecimalFormat("#0.0");
+        NumberFormat formatter = new DecimalFormat("#0.000");
         return formatter.format(this.getArrivalTime());
     }
 
@@ -34,12 +34,12 @@ class Customer {
     }
 
     String getFormattedDoneTime() {
-        NumberFormat formatter = new DecimalFormat("#0.0");
+        NumberFormat formatter = new DecimalFormat("#0.000");
         return formatter.format(this.getDoneTime());
     }
 
     @Override
     public String toString() {
-        return String.format("customer %d", this.customerNumber);
+        return String.format("%d", this.customerNumber);
     }
 }

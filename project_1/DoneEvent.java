@@ -1,18 +1,34 @@
-class DoneEvent extends Event {
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
-    DoneEvent(Customer customer, Server server) {
-        super(customer, server, false);
+class DoneEvent extends AssignedEvent {
+    private final double eventTime;
+
+    DoneEvent(Customer customer, Server server, double eventTime) {
+        super(customer, server, false, HIGH_PRIORITY);
+        this.eventTime = eventTime;
     }
 
     @Override
     public String toString() {
         return String.format("%s customer %d done serving by %s",
-                this.getCustomer().getFormattedDoneTime(),
+                this.getFormattedEventTime(),
                 this.getCustomer().getCustomerNumber(),
                 this.getServer());
     }
 
+    String getFormattedEventTime() {
+        NumberFormat formatter = new DecimalFormat("#0.000");
+        return formatter.format(this.eventTime);
+    }
+
     double getEventTime() {
-        return this.getCustomer().getDoneTime();
+        return this.eventTime;
+    }
+
+    @Override
+    Pair<Event, ServerBalancer> getNextEvent(ServerBalancer serverBalancer) {
+        ServerBalancer newServerBalancer = serverBalancer.decrementServerQueue(this.getServer());
+        return new Pair<Event, ServerBalancer>(new TerminalEvent(this.getCustomer()), newServerBalancer);
     }
 }

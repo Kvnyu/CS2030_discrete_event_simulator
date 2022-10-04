@@ -1,7 +1,7 @@
 abstract class Event {
     protected final Customer customer;
-    protected final boolean hasNextEvent;
     protected final int priority;
+    protected final boolean isTerminalEvent;
     protected static final int LOW_PRIORITY = 0;
     protected static final int HIGH_PRIORITY = 1;
 
@@ -9,28 +9,30 @@ abstract class Event {
         this(customer, false, HIGH_PRIORITY);
     }
 
+    Event(Customer customer, boolean isTerminalEvent) {
+        this(customer, isTerminalEvent, HIGH_PRIORITY);
+    }
+
     Event(Customer customer, int priority) {
         this(customer, false, priority);
     }
 
-    Event(Customer customer, boolean hasNextEvent) {
-        this(customer, hasNextEvent, HIGH_PRIORITY);
-    }
-
-    Event(Customer customer, boolean hasNextEvent, int priority) {
+    Event(Customer customer, boolean isTerminalEvent, int priority) {
         this.priority = priority;
         this.customer = customer;
-        this.hasNextEvent = hasNextEvent;
+        this.isTerminalEvent = isTerminalEvent;
     }
 
     abstract double getEventTime();
+
+    abstract Pair<Event, ServerBalancer> getNextEvent(ServerBalancer serverBalancer);
 
     protected Customer getCustomer() {
         return this.customer;
     }
 
-    protected boolean hasNextEvent() {
-        return this.hasNextEvent;
+    protected boolean isTerminalEvent() {
+        return this.isTerminalEvent;
     }
 
     protected int getPriority() {
