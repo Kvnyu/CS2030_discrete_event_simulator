@@ -1,0 +1,50 @@
+import java.util.Scanner;
+
+class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        ImList<Pair<Double, Double>> inputTimes = new ImList<Pair<Double, Double>>();
+
+        int numOfServers = sc.nextInt();
+        int qmax = sc.nextInt();
+        while (sc.hasNextDouble()) {
+            double arrivalTime = sc.nextDouble();
+            double serviceTime = sc.nextDouble();
+            inputTimes = inputTimes.add(new Pair<Double, Double>(arrivalTime, serviceTime));
+        }
+
+        Simulator sim = new Simulator(numOfServers, qmax, inputTimes);
+        System.out.println(sim.simulate());
+        sc.close();
+        // Scanner sc = new Scanner(System.in);
+        // String name = sc.nextLine();
+        // Server server = new Server(name);
+        // int customerCount = 0;
+        // PQ<Event> queue = new PQ<Event>(new EventComparator());
+
+        // while (sc.hasNextDouble()) {
+        // customerCount++;
+        // double arrivalTime = sc.nextDouble();
+        // double serviceTime = sc.nextDouble();
+
+        // Customer customer = new Customer(arrivalTime, serviceTime, customerCount);
+        // queue = queue.add(new ArriveEvent(customer, server));
+        // }
+        // while (!queue.isEmpty()) {
+        // Pair<Event, PQ<Event>> pair = queue.poll();
+        // Event event = pair.first();
+        // server = event.getServer();
+        // queue = pair.second();
+
+        // System.out.println(event);
+        // if (event.hasNextEvent) {
+        // NonTerminalEvent nonTerminalEvent = (NonTerminalEvent) event;
+        // Event nextEvent = nonTerminalEvent.getNextEvent(server);
+        // server = nextEvent.getServer();
+        // queue = queue.add(nextEvent);
+        // }
+        // }
+
+        // sc.close();
+    }
+}
