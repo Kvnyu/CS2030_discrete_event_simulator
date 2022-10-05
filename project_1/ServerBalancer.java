@@ -10,7 +10,7 @@ class ServerBalancer {
         ImList<Server> servers = new ImList<Server>();
 
         for (int i = 0; i < this.numOfServers; i++) {
-            servers = servers.add(new Server(Integer.toString(i + 1), this.qmax));
+            servers = servers.add(new Server(i + 1, this.qmax));
         }
 
         this.servers = servers;
@@ -31,7 +31,7 @@ class ServerBalancer {
         return false;
     }
 
-    Pair<Event, ServerBalancer> serve(Customer customer) {
+    Pair<Server, ServerBalancer> serve(Customer customer) {
         int availableServerIndex = 0;
         Server availableServer = this.servers.get(availableServerIndex);
         for (int i = 0; i < this.servers.size(); i++) {
@@ -44,34 +44,41 @@ class ServerBalancer {
 
         Server newServer = availableServer.serve(customer);
         ImList<Server> newServers = this.servers.set(availableServerIndex, newServer);
-        ServerBalancer newServerBalancer = new ServerBalancer(this.numOfServers, this.qmax, newServers);
-        return new Pair<Event, ServerBalancer>(new ServeEvent(customer, newServer, customer.getArrivalTime()),
+        ServerBalancer newServerBalancer = new ServerBalancer(
+                this.numOfServers, this.qmax, newServers);
+        return new Pair<Server, ServerBalancer>(
+                newServer,
                 newServerBalancer);
     }
 
-    Pair<Event, ServerBalancer> serve(Customer customer, Server server) {
-        Server newServer = server.serveFromQueue(customer);
-        ImList<Server> newServers = this.servers.set(this.servers.indexOf(server), newServer);
-        ServerBalancer newServerBalancer = new ServerBalancer(this.numOfServers, this.qmax, newServers);
-        return new Pair<Event, ServerBalancer>(
-                new ServeEvent(customer, newServer, newServer.getAvailableTime()),
+    Pair<Server, ServerBalancer> serve(Customer customer, Server server) {
+        Server currentServer = this.servers.get(server.getServerIndexNumber());
+        Server newServer = currentServer.serveFromQueue(customer);
+        ImList<Server> newServers = this.servers.set(this.servers.indexOf(server),
+                newServer);
+        ServerBalancer newServerBalancer = new ServerBalancer(this.numOfServers,
+                this.qmax, newServers);
+        return new Pair<Server, ServerBalancer>(
+                newServer,
                 newServerBalancer);
     }
 
-    Pair<Event, ServerBalancer> addToQueue(Customer customer) {
+    Pair<Server, ServerBalancer> addToQueue(Customer customer) {
         int serverWithQueueSpaceIndex = 0;
         Server serverWithQueueSpace = this.servers.get(serverWithQueueSpaceIndex);
         for (int i = 0; i < this.servers.size(); i++) {
             if (this.servers.get(i).hasSpaceInQueue()) {
                 serverWithQueueSpaceIndex = i;
                 serverWithQueueSpace = this.servers.get(i);
+                break;
             }
         }
-        Server newServer = serverWithQueueSpace.addCustomerToQueue(customer.getServiceTime());
+        Server newServer = serverWithQueueSpace.addCustomerToQueue(customer);
         ImList<Server> newServers = this.servers.set(serverWithQueueSpaceIndex, newServer);
-        ServerBalancer newServerBalancer = new ServerBalancer(this.numOfServers, this.qmax, newServers);
-        return new Pair<Event, ServerBalancer>(
-                new WaitEvent(customer, newServer, serverWithQueueSpace.getAvailableTime()), newServerBalancer);
+        ServerBalancer newServerBalancer = new ServerBalancer(
+                this.numOfServers, this.qmax, newServers);
+        return new Pair<Server, ServerBalancer>(newServer,
+                newServerBalancer);
     }
 
     Server getAvailableServer(double arrivalTime) {
@@ -97,12 +104,38 @@ class ServerBalancer {
     ServerBalancer decrementServerQueue(Server server) {
         ServerBalancer serverBalancer = this;
         if (server.getQSize() > 0) {
-            Server newServer = server.removeCustomerFromQueue();
-            int newServerIndex = this.servers.indexOf(server);
-            ImList<Server> newServers = this.servers.set(newServerIndex, newServer);
+            Server currentServer = this.servers.get(server.getServerIndexNumber());
+            Server newServer = currentServer.removeCustomerFromQueue();
+            ImList<Server> newServers = this.servers.set(
+                    newServer.getServerIndexNumber(),
+                    newServer);
             serverBalancer = new ServerBalancer(this.numOfServers, this.qmax, newServers);
         }
         return serverBalancer;
     }
 
+    double getTotalCustomerWaitTime() {
+        double customerWaitTime = 0.0;
+        for (Server server : this.servers) {
+            customerWaitTime += server.getTotalCustomerWaitTime();
+        }
+        return customerWaitTime;
+    }
+
+    int getTotalCustomersServed() {
+        int totalCustomersServed = 0;
+        for (Server server : this.servers) {
+            totalCustomersServed += server.getCustomersServed();
+        }
+        return totalCustomersServed;
+    }
+
+    @Override
+    public String toString() {
+        for (Server server : this.servers) {
+            System.out.print(String.format("server %s, in queue: %d | ",
+                    server, server.getQSize()));
+        }
+        return "";
+    }
 }

@@ -3,7 +3,8 @@ abstract class Event {
     protected final int priority;
     protected final boolean isTerminalEvent;
     protected static final int LOW_PRIORITY = 0;
-    protected static final int HIGH_PRIORITY = 1;
+    protected static final int MID_PRIORITY = 1;
+    protected static final int HIGH_PRIORITY = 2;
 
     Event(Customer customer) {
         this(customer, false, HIGH_PRIORITY);

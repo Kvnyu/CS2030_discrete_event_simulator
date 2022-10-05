@@ -13,8 +13,12 @@ public class WaitEvent extends AssignedEvent {
 
     @Override
     Pair<Event, ServerBalancer> getNextEvent(ServerBalancer serverBalancer) {
+        Pair<Server, ServerBalancer> serverWithBalancer = serverBalancer.serve(
+                this.getCustomer(), this.getServer());
         return new Pair<Event, ServerBalancer>(
-                new ServeEvent(customer, this.getServer(), this.serviceTime), serverBalancer);
+                new ServeEvent(
+                        customer, serverWithBalancer.first(), this.serviceTime, true),
+                serverWithBalancer.second());
     }
 
     @Override

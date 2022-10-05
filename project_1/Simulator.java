@@ -10,7 +10,7 @@ class Simulator {
     }
 
     String simulate() {
-        int customerCount = 1;
+        int customerNumber = 1;
         PQ<Event> queue = new PQ<Event>(new EventComparator());
         ServerBalancer serverBalancer = new ServerBalancer(this.numOfServers, this.qmax);
 
@@ -19,9 +19,9 @@ class Simulator {
             double arrivalTime = customerPair.first();
             double serviceTime = customerPair.second();
 
-            Customer customer = new Customer(arrivalTime, serviceTime, customerCount);
+            Customer customer = new Customer(arrivalTime, serviceTime, customerNumber);
             queue = queue.add(new ArriveEvent(customer));
-            customerCount += 1;
+            customerNumber += 1;
         }
 
         while (!queue.isEmpty()) {
@@ -45,6 +45,16 @@ class Simulator {
                 System.out.println(event);
             }
         }
-        return "";
+
+        int customerCount = customerNumber - 1;
+        ImList<Double> returnArray = new ImList<Double>();
+        int totalCustomersServed = serverBalancer.getTotalCustomersServed();
+        int totalCustomersLeft = customerCount - totalCustomersServed;
+        double averageWaitingTime = serverBalancer.getTotalCustomerWaitTime()
+                / totalCustomersServed;
+        returnArray = returnArray.add(averageWaitingTime);
+
+        return String.format("[%.3f %d %d]", averageWaitingTime,
+                totalCustomersServed, totalCustomersLeft);
     }
 }

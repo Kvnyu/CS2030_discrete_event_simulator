@@ -11,7 +11,7 @@ class DoneEvent extends AssignedEvent {
 
     @Override
     public String toString() {
-        return String.format("%s customer %d done serving by %s",
+        return String.format("%s %d done serving by %s",
                 this.getFormattedEventTime(),
                 this.getCustomer().getCustomerNumber(),
                 this.getServer());
@@ -28,7 +28,7 @@ class DoneEvent extends AssignedEvent {
 
     @Override
     Pair<Event, ServerBalancer> getNextEvent(ServerBalancer serverBalancer) {
-        ServerBalancer newServerBalancer = serverBalancer.decrementServerQueue(this.getServer());
-        return new Pair<Event, ServerBalancer>(new TerminalEvent(this.getCustomer()), newServerBalancer);
+        return new Pair<Event, ServerBalancer>(
+                new TerminalEvent(this.getCustomer()), serverBalancer);
     }
 }
