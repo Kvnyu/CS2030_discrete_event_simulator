@@ -1,0 +1,348 @@
+8.000 1 arrives
+8.000 1 serves by 1
+9.000 2 arrives
+9.000 2 serves by 2
+10.000 3 arrives
+10.000 3 waits at 1
+14.000 4 arrives
+14.000 4 waits at 1
+22.000 5 arrives
+22.000 5 waits at 2
+24.000 6 arrives
+24.000 6 waits at 2
+27.000 1 done serving by 1
+27.000 2 done serving by 2
+27.000 3 serves by 1
+27.000 5 serves by 2
+30.000 7 arrives
+30.000 7 waits at 1
+34.000 8 arrives
+34.000 8 waits at 2
+35.000 5 done serving by 2
+35.000 6 serves by 2
+44.000 3 done serving by 1
+44.000 4 serves by 1
+44.000 9 arrives
+44.000 9 waits at 1
+48.000 6 done serving by 2
+48.000 8 serves by 2
+50.000 4 done serving by 1
+50.000 7 serves by 1
+51.000 8 done serving by 2
+52.000 10 arrives
+52.000 10 serves by 2
+59.000 11 arrives
+59.000 11 waits at 1
+60.000 12 arrives
+60.000 12 waits at 2
+62.000 10 done serving by 2
+62.000 12 serves by 2
+63.000 13 arrives
+63.000 13 waits at 2
+66.000 14 arrives
+66.000 14 waits at 2
+68.000 15 arrives
+68.000 15 leaves
+69.000 7 done serving by 1
+69.000 9 serves by 1
+69.000 9 done serving by 1
+69.000 11 serves by 1
+78.000 16 arrives
+78.000 16 waits at 1
+79.000 17 arrives
+79.000 17 waits at 1
+80.000 12 done serving by 2
+80.000 13 serves by 2
+81.000 11 done serving by 1
+81.000 16 serves by 1
+85.000 16 done serving by 1
+85.000 17 serves by 1
+87.000 18 arrives
+87.000 18 waits at 1
+93.000 19 arrives
+93.000 19 waits at 1
+94.000 17 done serving by 1
+94.000 18 serves by 1
+95.000 13 done serving by 2
+95.000 14 serves by 2
+100.000 20 arrives
+100.000 20 waits at 1
+102.000 18 done serving by 1
+102.000 19 serves by 1
+103.000 19 done serving by 1
+103.000 20 serves by 1
+103.000 21 arrives
+103.000 21 waits at 1
+104.000 14 done serving by 2
+112.000 22 arrives
+112.000 22 serves by 2
+114.000 23 arrives
+114.000 23 waits at 1
+118.000 20 done serving by 1
+118.000 21 serves by 1
+120.000 22 done serving by 2
+123.000 24 arrives
+123.000 24 serves by 2
+131.000 21 done serving by 1
+131.000 23 serves by 1
+131.000 25 arrives
+131.000 25 waits at 1
+138.000 24 done serving by 2
+140.000 23 done serving by 1
+140.000 25 serves by 1
+141.000 26 arrives
+141.000 26 serves by 2
+143.000 25 done serving by 1
+146.000 27 arrives
+146.000 27 serves by 1
+153.000 28 arrives
+153.000 28 waits at 1
+154.000 26 done serving by 2
+155.000 29 arrives
+155.000 29 serves by 2
+159.000 27 done serving by 1
+159.000 28 serves by 1
+161.000 30 arrives
+161.000 30 waits at 1
+165.000 29 done serving by 2
+167.000 31 arrives
+167.000 31 serves by 2
+170.000 31 done serving by 2
+173.000 32 arrives
+173.000 32 serves by 2
+178.000 28 done serving by 1
+178.000 30 serves by 1
+182.000 33 arrives
+182.000 33 waits at 1
+189.000 34 arrives
+189.000 34 waits at 1
+192.000 32 done serving by 2
+193.000 30 done serving by 1
+193.000 33 serves by 1
+193.000 35 arrives
+193.000 35 serves by 2
+195.000 33 done serving by 1
+195.000 34 serves by 1
+201.000 36 arrives
+201.000 36 waits at 1
+206.000 34 done serving by 1
+206.000 35 done serving by 2
+206.000 36 serves by 1
+211.000 37 arrives
+211.000 37 serves by 2
+212.000 36 done serving by 1
+217.000 38 arrives
+217.000 38 serves by 1
+219.000 39 arrives
+219.000 39 waits at 1
+220.000 40 arrives
+220.000 40 waits at 1
+222.000 41 arrives
+222.000 41 waits at 2
+223.000 37 done serving by 2
+223.000 41 serves by 2
+228.000 42 arrives
+228.000 42 waits at 2
+231.000 43 arrives
+231.000 43 waits at 2
+232.000 41 done serving by 2
+232.000 42 serves by 2
+235.000 38 done serving by 1
+235.000 39 serves by 1
+235.000 42 done serving by 2
+235.000 43 serves by 2
+240.000 43 done serving by 2
+240.000 44 arrives
+240.000 44 serves by 2
+245.000 44 done serving by 2
+247.000 45 arrives
+247.000 45 serves by 2
+251.000 39 done serving by 1
+251.000 40 serves by 1
+251.000 46 arrives
+251.000 46 waits at 1
+256.000 45 done serving by 2
+256.000 47 arrives
+256.000 47 serves by 2
+261.000 47 done serving by 2
+264.000 40 done serving by 1
+264.000 46 serves by 1
+266.000 48 arrives
+266.000 48 serves by 2
+266.000 48 done serving by 2
+267.000 49 arrives
+267.000 49 serves by 2
+273.000 50 arrives
+273.000 50 waits at 1
+280.000 51 arrives
+280.000 51 waits at 1
+282.000 46 done serving by 1
+282.000 50 serves by 1
+283.000 49 done serving by 2
+284.000 50 done serving by 1
+284.000 51 serves by 1
+290.000 52 arrives
+290.000 52 serves by 2
+293.000 52 done serving by 2
+293.000 53 arrives
+293.000 53 serves by 2
+297.000 51 done serving by 1
+302.000 54 arrives
+302.000 54 serves by 1
+308.000 53 done serving by 2
+309.000 54 done serving by 1
+310.000 55 arrives
+310.000 55 serves by 1
+312.000 55 done serving by 1
+317.000 56 arrives
+317.000 56 serves by 1
+323.000 57 arrives
+323.000 57 serves by 2
+325.000 56 done serving by 1
+328.000 58 arrives
+328.000 58 serves by 1
+334.000 59 arrives
+334.000 59 waits at 1
+338.000 57 done serving by 2
+339.000 60 arrives
+339.000 60 serves by 2
+340.000 58 done serving by 1
+340.000 59 serves by 1
+340.000 60 done serving by 2
+341.000 59 done serving by 1
+345.000 61 arrives
+345.000 61 serves by 1
+346.000 61 done serving by 1
+352.000 62 arrives
+352.000 62 serves by 1
+357.000 63 arrives
+357.000 63 serves by 2
+358.000 64 arrives
+358.000 64 waits at 1
+365.000 63 done serving by 2
+367.000 65 arrives
+367.000 65 serves by 2
+369.000 62 done serving by 1
+369.000 64 serves by 1
+370.000 65 done serving by 2
+375.000 64 done serving by 1
+376.000 66 arrives
+376.000 66 serves by 1
+384.000 67 arrives
+384.000 67 serves by 2
+385.000 68 arrives
+385.000 68 waits at 1
+392.000 69 arrives
+392.000 69 waits at 1
+394.000 66 done serving by 1
+394.000 67 done serving by 2
+394.000 68 serves by 1
+394.000 70 arrives
+394.000 70 serves by 2
+395.000 68 done serving by 1
+395.000 69 serves by 1
+401.000 70 done serving by 2
+402.000 71 arrives
+402.000 71 serves by 2
+403.000 69 done serving by 1
+403.000 71 done serving by 2
+410.000 72 arrives
+410.000 72 serves by 1
+416.000 73 arrives
+416.000 73 serves by 2
+419.000 72 done serving by 1
+421.000 74 arrives
+421.000 74 serves by 1
+431.000 75 arrives
+431.000 75 waits at 1
+432.000 73 done serving by 2
+433.000 74 done serving by 1
+433.000 75 serves by 1
+439.000 76 arrives
+439.000 76 serves by 2
+440.000 77 arrives
+440.000 77 waits at 1
+441.000 78 arrives
+441.000 78 waits at 1
+442.000 76 done serving by 2
+444.000 79 arrives
+444.000 79 serves by 2
+447.000 80 arrives
+447.000 80 waits at 2
+448.000 75 done serving by 1
+448.000 77 serves by 1
+453.000 81 arrives
+453.000 81 waits at 1
+458.000 79 done serving by 2
+458.000 80 serves by 2
+458.000 80 done serving by 2
+458.000 82 arrives
+458.000 82 serves by 2
+461.000 77 done serving by 1
+461.000 78 serves by 1
+464.000 78 done serving by 1
+464.000 81 serves by 1
+465.000 82 done serving by 2
+467.000 83 arrives
+467.000 83 serves by 2
+469.000 83 done serving by 2
+475.000 81 done serving by 1
+475.000 84 arrives
+475.000 84 serves by 1
+478.000 85 arrives
+478.000 85 serves by 2
+482.000 86 arrives
+482.000 86 waits at 1
+483.000 84 done serving by 1
+483.000 86 serves by 1
+485.000 86 done serving by 1
+485.000 87 arrives
+485.000 87 serves by 1
+486.000 85 done serving by 2
+494.000 88 arrives
+494.000 88 serves by 2
+495.000 89 arrives
+495.000 89 waits at 1
+498.000 90 arrives
+498.000 90 waits at 1
+503.000 87 done serving by 1
+503.000 89 serves by 1
+504.000 91 arrives
+504.000 91 waits at 1
+506.000 92 arrives
+506.000 92 waits at 2
+507.000 93 arrives
+507.000 93 waits at 2
+509.000 88 done serving by 2
+509.000 92 serves by 2
+509.000 92 done serving by 2
+509.000 93 serves by 2
+513.000 94 arrives
+513.000 94 waits at 2
+515.000 95 arrives
+515.000 95 waits at 2
+516.000 89 done serving by 1
+516.000 90 serves by 1
+517.000 96 arrives
+517.000 96 waits at 1
+518.000 97 arrives
+518.000 97 leaves
+526.000 93 done serving by 2
+526.000 94 serves by 2
+527.000 90 done serving by 1
+527.000 91 serves by 1
+527.000 94 done serving by 2
+527.000 95 serves by 2
+527.000 98 arrives
+527.000 98 waits at 1
+531.000 99 arrives
+531.000 99 waits at 2
+533.000 91 done serving by 1
+533.000 96 serves by 1
+541.000 96 done serving by 1
+541.000 98 serves by 1
+542.000 98 done serving by 1
+545.000 95 done serving by 2
+545.000 99 serves by 2
+550.000 99 done serving by 2
+[5.990 97 2]
