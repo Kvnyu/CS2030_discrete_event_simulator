@@ -70,6 +70,8 @@ class Server {
         return this.customersServed;
     }
 
+    // TODO: update the "next available time logic" as we don't knw when they'll
+    // next be available now
     Server addCustomerToQueue(Customer customer) {
         return new Server(this.number, this.qmax, this.qsize + 1,
                 this.availableTime + customer.getServiceTime(),

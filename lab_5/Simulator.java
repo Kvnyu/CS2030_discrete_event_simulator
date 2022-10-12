@@ -4,19 +4,11 @@ class Simulator {
     private final int numOfServers;
     private final int qmax;
     private final ImList<Pair<Double, Supplier<Double>>> inputTimes;
-    private static final int magic99 = 95;
 
     Simulator(int numOfServers, int qmax, ImList<Pair<Double, Supplier<Double>>> inputTimes) {
         this.numOfServers = numOfServers;
         this.qmax = qmax;
         this.inputTimes = inputTimes;
-        if (this.inputTimes.size() > magic99 && this.numOfServers > 1) {
-            int i = this.inputTimes.size();
-            while (i > 0) {
-                System.out.println(this.inputTimes.get(0).second().get());
-                i--;
-            }
-        }
     }
 
     String simulate() {

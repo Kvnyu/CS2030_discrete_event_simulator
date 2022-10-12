@@ -1,9 +1,11 @@
-public class WaitEvent extends AssignedEvent {
-    private final double serviceTime;
+import java.util.function.Supplier;
 
-    WaitEvent(Customer customer, Server server, double serviceTime) {
+public class WaitEvent extends AssignedEvent {
+    private final Supplier<Double> serviceTimeSupplier;
+
+    WaitEvent(Customer customer, Server server, Supplier<Double> serviceTimeSupplier) {
         super(customer, server, false, HIGH_PRIORITY);
-        this.serviceTime = serviceTime;
+        this.serviceTimeSupplier = serviceTimeSupplier;
     }
 
     @Override
@@ -17,7 +19,9 @@ public class WaitEvent extends AssignedEvent {
                 this.getCustomer(), this.getServer());
         return new Pair<Event, ServerBalancer>(
                 new ServeEvent(
-                        customer, serverWithBalancer.first(), this.serviceTime, true),
+                        customer, serverWithBalancer.first(),
+                        this.getServer().getAvailableTime() + this.serviceTimeSupplier.get(),
+                        true),
                 serverWithBalancer.second());
     }
 

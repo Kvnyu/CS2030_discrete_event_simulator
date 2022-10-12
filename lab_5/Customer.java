@@ -10,6 +10,7 @@ class Customer {
         this.arrivalTime = arrivalTime;
         this.serviceTime = serviceTime;
         this.customerNumber = customerNumber;
+        System.out.println(String.format("customer %s serviceTime:%f", this.customerNumber, this.serviceTime));
     }
 
     Customer(double arrivalTime, int customerNumber) {
