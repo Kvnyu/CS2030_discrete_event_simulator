@@ -53,6 +53,9 @@ class ServerBalancer {
     Server getServerWithSpaceInQueue() {
         Server serverWithSpaceInQueue = this.servers.get(0);
         for (Server server : this.servers) {
+            // System.out.print(server.getServerNumber());
+            // System.out.print(" ");
+            // System.out.println(server.getCustomers());
             if (server.hasSpaceInQueue()) {
                 return server;
             }

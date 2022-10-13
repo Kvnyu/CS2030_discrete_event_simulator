@@ -21,21 +21,22 @@ class Simulator {
             double arrivalTime = customerPair.first();
 
             Customer customer = new Customer(arrivalTime, customerNumber);
-            queue = queue.add(new ArriveEvent(customer, customerPair.second(), customer.getArrivalTime()));
+            queue = queue.add(new ArriveEvent(customer,
+                    customerPair.second(), customer.getArrivalTime()));
             customerNumber += 1;
         }
 
         while (!queue.isEmpty()) {
-            System.out.println("new iteration------------------");
+            // System.out.println("new iteration------------------");
             Pair<Event, PQ<Event>> pair = queue.poll();
             Event event = pair.first();
             queue = pair.second();
 
-            System.out.println(queue);
+            // System.out.println(queue);
 
             if (!event.isTerminalEvent()) {
                 System.out.println(event);
-                System.out.println(event.getPriority());
+                // System.out.println(event.getPriority());
             }
 
             Pair<Event, ServerBalancer> eventServers = event.getNextEvent(serverBalancer);

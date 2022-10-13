@@ -32,7 +32,9 @@ abstract class Event {
 
     abstract Pair<Event, ServerBalancer> getNextEvent(ServerBalancer serverBalancer);
 
-    abstract double getEventTime();
+    double getEventTime() {
+        return this.eventTime;
+    }
 
     protected Customer getCustomer() {
         return this.customer;

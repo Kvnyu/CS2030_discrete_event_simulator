@@ -1,9 +1,10 @@
 import java.util.function.Supplier;
 
 class DoneEvent extends AssignedEvent {
-    Supplier<Double> serviceTimeSupplier;
+    private final Supplier<Double> serviceTimeSupplier;
 
-    DoneEvent(Customer customer, int serverNumber, Supplier<Double> serviceTimeSupplier, double eventTime) {
+    DoneEvent(Customer customer, int serverNumber,
+            Supplier<Double> serviceTimeSupplier, double eventTime) {
         super(customer, serverNumber, false, HIGH_PRIORITY, eventTime);
         this.serviceTimeSupplier = serviceTimeSupplier;
     }
@@ -16,9 +17,12 @@ class DoneEvent extends AssignedEvent {
         if (server.hasCustomersInQueue()) {
             Customer customer = server.getNextCustomerInQueue();
             event = new ServeEvent(customer, server.getServerNumber(),
-                    this.getEventTime(), this.serviceTimeSupplier);
+                    this.getEventTime(), this.serviceTimeSupplier, true);
         }
         serverBalancer = serverBalancer.updateServer(server);
+        // System.out.println(String.format("customer %d finished, created new event
+        // with priority %d",
+        // this.getCustomer().getCustomerNumber(), this.getPriority()));
         return new Pair<Event, ServerBalancer>(event, serverBalancer);
     }
 
@@ -28,9 +32,5 @@ class DoneEvent extends AssignedEvent {
                 this.getFormattedEventTime(),
                 this.getCustomer().getCustomerNumber(),
                 this.getServerNumber());
-    }
-
-    double getEventTime() {
-        return this.eventTime;
     }
 }

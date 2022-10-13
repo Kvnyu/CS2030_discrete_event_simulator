@@ -1,5 +1,3 @@
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.function.Supplier;
 
 class ArriveEvent extends Event {
@@ -21,15 +19,17 @@ class ArriveEvent extends Event {
             // Get server
             Server availableServer = serverBalancer.getAvailableServer();
             // Create new serveEvent with server and customer
-            ServeEvent serveEvent = new ServeEvent(this.getCustomer(), availableServer.getServerNumber(),
-                    this.getCustomer().getArrivalTime(), serviceTimeSupplier);
+            ServeEvent serveEvent = new ServeEvent(this.getCustomer(),
+                    availableServer.getServerNumber(),
+                    this.getCustomer().getArrivalTime(), serviceTimeSupplier, false);
             return new Pair<Event, ServerBalancer>(serveEvent, serverBalancer);
         } else if (serverBalancer.isThereServerWithSpaceInQueue()) {
             Server serverWithSpaceInQueue = serverBalancer.getServerWithSpaceInQueue();
             // Create new serveEvent with server and customer
             serverWithSpaceInQueue = serverWithSpaceInQueue.addCustomerToQueue(this.getCustomer());
             System.out.println(
-                    String.format("%.3f %d waits at %d", this.eventTime, this.customer.getCustomerNumber(),
+                    String.format("%.3f %d waits at %d", this.eventTime,
+                            this.customer.getCustomerNumber(),
                             serverWithSpaceInQueue.getServerNumber()));
             ServerBalancer newServerBalancer = serverBalancer.updateServer(serverWithSpaceInQueue);
             TerminalEvent terminalEvent = new TerminalEvent(customer);

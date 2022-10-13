@@ -16,23 +16,28 @@ class Server {
         this(serverNumber, maxQSize, 0, nextAvailableAt);
     }
 
-    Server(int serverNumber, int maxQSize, int customersServed, double nextAvailableAt) {
-        this(serverNumber, maxQSize, customersServed, 0.0, nextAvailableAt);
+    Server(int serverNumber, int maxQSize,
+            int totalCustomersServed, double nextAvailableAt) {
+        this(serverNumber, maxQSize, totalCustomersServed, 0.0, nextAvailableAt);
     }
 
-    Server(int serverNumber, int maxQSize, int customersServed,
+    Server(int serverNumber, int maxQSize, int totalCustomersServed,
             double totalCustomerWaitTime, double nextAvailableAt) {
-        this(serverNumber, maxQSize, customersServed, 0.0, true, nextAvailableAt);
+        this(serverNumber, maxQSize, totalCustomersServed,
+                0.0, true, nextAvailableAt);
     }
 
     Server(int serverNumber, int maxQSize,
-            int totalCustomersServed, double totalCustomerWaitTime, boolean isAvailable, double nextAvailableAt) {
-        this(serverNumber, maxQSize, totalCustomersServed, totalCustomerWaitTime, isAvailable, nextAvailableAt,
+            int totalCustomersServed, double totalCustomerWaitTime,
+            boolean isAvailable, double nextAvailableAt) {
+        this(serverNumber, maxQSize, totalCustomersServed,
+                totalCustomerWaitTime, isAvailable, nextAvailableAt,
                 new ImList<Customer>());
     }
 
     Server(int serverNumber, int maxQSize,
-            int totalCustomersServed, double totalCustomerWaitTime, boolean isAvailable, double nextAvailableAt,
+            int totalCustomersServed, double totalCustomerWaitTime,
+            boolean isAvailable, double nextAvailableAt,
             ImList<Customer> customers) {
         this.nextAvailableAt = nextAvailableAt;
         this.serverNumber = serverNumber;
@@ -41,6 +46,9 @@ class Server {
         this.totalCustomerWaitTime = totalCustomerWaitTime;
         this.isAvailable = isAvailable;
         this.customers = customers;
+        // System.out.println(
+        // String.format("Server number %d and next available at %f", this.serverNumber,
+        // this.nextAvailableAt));
     }
 
     boolean isAvailable() {
@@ -63,22 +71,34 @@ class Server {
         return this.serverNumber;
     }
 
-    Server startServing(Customer customer, double serviceTime) {
+    Server startServing(Customer customer, double serviceTime, boolean serveFromQueue) {
         // TODO: Update the totalCustomersServed and totalCustomerWaitTime in the
         // DoneEvent
-        ImList<Customer> customers = this.customers.add(customer);
+        double startServingTime;
+        if (serveFromQueue) {
+            startServingTime = this.getNextAvailableAt();
+        } else {
+            startServingTime = customer.getArrivalTime();
+        }
+        ImList<Customer> customers = this.customers;
+        if (!serveFromQueue) {
+            customers = this.customers.add(customer);
+        }
         if (this.totalCustomersServed == 0) {
-            return new Server(this.serverNumber, this.maxQSize, this.totalCustomersServed, this.totalCustomerWaitTime,
+            return new Server(this.serverNumber, this.maxQSize,
+                    this.totalCustomersServed, this.totalCustomerWaitTime,
                     false, customer.getArrivalTime() + serviceTime, customers);
         }
-        return new Server(this.serverNumber, this.maxQSize, this.totalCustomersServed, this.totalCustomerWaitTime,
-                false, this.nextAvailableAt + serviceTime, customers);
+        return new Server(this.serverNumber, this.maxQSize,
+                this.totalCustomersServed, this.totalCustomerWaitTime,
+                false, startServingTime + serviceTime, customers);
     }
 
     Server addCustomerToQueue(Customer customer) {
         ImList<Customer> customers = this.customers.add(customer);
         // System.out.println(customers);
-        return new Server(this.serverNumber, this.maxQSize, this.totalCustomersServed, this.totalCustomerWaitTime,
+        return new Server(this.serverNumber, this.maxQSize,
+                this.totalCustomersServed, this.totalCustomerWaitTime,
                 this.isAvailable, this.nextAvailableAt, customers);
     }
 
@@ -93,7 +113,8 @@ class Server {
                 + (this.nextAvailableAt - finishedCustomer.getArrivalTime());
         int newTotalCustomersServed = this.totalCustomersServed + 1;
         // System.out.println(newCustomers);
-        return new Server(this.serverNumber, this.maxQSize, newTotalCustomersServed, newTotalCustomerWaitTime,
+        return new Server(this.serverNumber, this.maxQSize,
+                newTotalCustomersServed, newTotalCustomerWaitTime,
                 true, this.nextAvailableAt, newCustomers);
     }
 
@@ -111,5 +132,9 @@ class Server {
 
     Customer getNextCustomerInQueue() {
         return this.customers.get(0);
+    }
+
+    ImList<Customer> getCustomers() {
+        return this.customers;
     }
 }
