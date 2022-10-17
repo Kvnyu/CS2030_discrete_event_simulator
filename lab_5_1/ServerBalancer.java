@@ -20,6 +20,7 @@ class ServerBalancer {
         this.numOfServers = numOfServers;
         this.qmax = qmax;
         this.servers = servers;
+        // System.out.println(this.servers);
     }
 
     boolean isThereAServerAvailable() {

@@ -180,8 +180,8 @@
 280.000 51 arrives
 280.000 51 serves by 2
 282.000 48 done serving by 1
-282.000 51 done serving by 2
 282.000 49 serves by 1
+282.000 51 done serving by 2
 290.000 52 arrives
 290.000 52 serves by 2
 293.000 52 done serving by 2
@@ -207,8 +207,8 @@
 334.000 59 arrives
 334.000 59 serves by 2
 335.000 57 done serving by 1
-335.000 59 done serving by 2
 335.000 58 serves by 1
+335.000 59 done serving by 2
 336.000 58 done serving by 1
 339.000 60 arrives
 339.000 60 serves by 1

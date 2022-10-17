@@ -34,10 +34,7 @@ class Simulator {
 
             // System.out.println(queue);
 
-            if (!event.isTerminalEvent()) {
-                System.out.println(event);
-                // System.out.println(event.getPriority());
-            }
+            event.maybePrintEvent();
 
             Pair<Event, ServerBalancer> eventServers = event.getNextEvent(serverBalancer);
             Event nextEvent = eventServers.first();

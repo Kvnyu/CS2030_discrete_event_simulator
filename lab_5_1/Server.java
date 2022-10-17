@@ -56,6 +56,8 @@ class Server {
     }
 
     boolean hasSpaceInQueue() {
+        // System.out.println(String.format("%d %d", this.maxQSize,
+        // this.getQueueSize()));
         return this.maxQSize - this.getQueueSize() + 1 > 0;
     }
 
@@ -136,5 +138,10 @@ class Server {
 
     ImList<Customer> getCustomers() {
         return this.customers;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%d: %s", this.serverNumber, this.customers.toString());
     }
 }

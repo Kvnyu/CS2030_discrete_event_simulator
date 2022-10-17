@@ -6,30 +6,37 @@ class ServeEvent extends AssignedEvent {
 
     ServeEvent(Customer customer, int serverNumber, double eventTime,
             Supplier<Double> serviceTimeSupplier,
-            boolean serveFromQueue) {
-        super(customer, serverNumber, false, MID_PRIORITY, eventTime);
+            boolean serveFromQueue, boolean readyToPrint) {
+        super(customer, serverNumber, false, HIGH_PRIORITY, eventTime, readyToPrint);
         this.serveFromQueue = serveFromQueue;
         this.serviceTimeSupplier = serviceTimeSupplier;
     }
 
     @Override
     Pair<Event, ServerBalancer> getNextEvent(ServerBalancer serverBalancer) {
-        Server availableServer = serverBalancer.getServer(this.serverNumber);
+        Server server = serverBalancer.getServer(this.serverNumber);
+        ServerBalancer newServerBalancer = serverBalancer;
+        Event event;
+        if (this.isReadyToExecute()) {
+            double serviceTime = serviceTimeSupplier.get();
+            server = server.startServing(this.getCustomer(),
+                    serviceTime, this.serveFromQueue);
+            newServerBalancer = serverBalancer.updateServer(server);
+            event = new DoneEvent(this.getCustomer(),
+                    this.getServerNumber(), this.serviceTimeSupplier,
+                    server.getNextAvailableAt());
+        } else if (server.isAvailable()) {
+            event = new ServeEvent(this.getCustomer(),
+                    this.getServerNumber(), this.eventTime,
+                    this.serviceTimeSupplier, this.serveFromQueue, true);
+        } else {
+            // Otherwise, return a new ServeEvent with event time as the availableServer's
+            // next available time
+            event = new ServeEvent(this.customer, this.serverNumber, server.getNextAvailableAt(),
+                    this.serviceTimeSupplier, this.serveFromQueue, false);
 
-        double serviceTime = serviceTimeSupplier.get();
-        // System.out.println(String.format("customer %d %f",
-        // this.customer.getCustomerNumber(), serviceTime));
-        availableServer = availableServer.startServing(this.getCustomer(),
-                serviceTime, this.serveFromQueue);
-        // System.out.println(availableServer.getNextAvailableAt());
-        ServerBalancer newServerBalancer = serverBalancer.updateServer(availableServer);
-        // Get server
-        // Update server to available
-        // Remove the customer from the list
-        DoneEvent doneEvent = new DoneEvent(this.getCustomer(),
-                this.getServerNumber(), this.serviceTimeSupplier,
-                availableServer.getNextAvailableAt());
-        return new Pair<Event, ServerBalancer>(doneEvent, newServerBalancer);
+        }
+        return new Pair<Event, ServerBalancer>(event, newServerBalancer);
     }
 
     @Override

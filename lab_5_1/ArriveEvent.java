@@ -21,19 +21,16 @@ class ArriveEvent extends Event {
             // Create new serveEvent with server and customer
             ServeEvent serveEvent = new ServeEvent(this.getCustomer(),
                     availableServer.getServerNumber(),
-                    this.getCustomer().getArrivalTime(), serviceTimeSupplier, false);
+                    this.getCustomer().getArrivalTime(), serviceTimeSupplier, false, false);
+            serverBalancer = serverBalancer.updateServer(availableServer);
             return new Pair<Event, ServerBalancer>(serveEvent, serverBalancer);
         } else if (serverBalancer.isThereServerWithSpaceInQueue()) {
-            Server serverWithSpaceInQueue = serverBalancer.getServerWithSpaceInQueue();
             // Create new serveEvent with server and customer
-            serverWithSpaceInQueue = serverWithSpaceInQueue.addCustomerToQueue(this.getCustomer());
-            System.out.println(
-                    String.format("%.3f %d waits at %d", this.eventTime,
-                            this.customer.getCustomerNumber(),
-                            serverWithSpaceInQueue.getServerNumber()));
-            ServerBalancer newServerBalancer = serverBalancer.updateServer(serverWithSpaceInQueue);
-            TerminalEvent terminalEvent = new TerminalEvent(customer);
-            return new Pair<Event, ServerBalancer>(terminalEvent, newServerBalancer);
+            Server serverWithSpaceInQueue = serverBalancer.getServerWithSpaceInQueue();
+            WaitEvent waitEvent = new WaitEvent(this.customer, serverWithSpaceInQueue.getServerNumber(), this.eventTime,
+                    this.serviceTimeSupplier,
+                    false);
+            return new Pair<Event, ServerBalancer>(waitEvent, serverBalancer);
         }
         return new Pair<Event, ServerBalancer>(new LeaveEvent(this.customer), serverBalancer);
     }
