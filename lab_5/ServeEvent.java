@@ -31,8 +31,11 @@ class ServeEvent extends AssignedEvent {
     @Override
     Pair<Event, ServerBalancer> getNextEvent(ServerBalancer serverBalancer) {
         ServerBalancer newServerBalancer = serverBalancer;
+        // update server for non serve from queue
         if (this.serveFromQueue) {
-            newServerBalancer = serverBalancer.decrementServerQueue(this.getServer());
+            newServerBalancer = serverBalancer.decrementServerQueue(this.customer, this.getServer());
+        } else {
+            newServerBalancer = serverBalancer.finishServingCustomer(this.customer, this.getServer());
         }
         return new Pair<Event, ServerBalancer>(
                 new DoneEvent(customer, this.getServer(),

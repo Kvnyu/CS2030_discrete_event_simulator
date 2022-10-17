@@ -54,7 +54,7 @@ class ServerBalancer {
     Pair<Server, ServerBalancer> serve(Customer customer, Server server) {
         Server currentServer = this.servers.get(server.getServerIndexNumber());
         Server newServer = currentServer.serveFromQueue(customer);
-        ImList<Server> newServers = this.servers.set(this.servers.indexOf(server),
+        ImList<Server> newServers = this.servers.set(server.getServerIndexNumber(),
                 newServer);
         ServerBalancer newServerBalancer = new ServerBalancer(this.numOfServers,
                 this.qmax, newServers);
@@ -101,11 +101,24 @@ class ServerBalancer {
         return false;
     }
 
-    ServerBalancer decrementServerQueue(Server server) {
+    ServerBalancer decrementServerQueue(Customer customer, Server server) {
         ServerBalancer serverBalancer = this;
         if (server.getQSize() > 0) {
             Server currentServer = this.servers.get(server.getServerIndexNumber());
-            Server newServer = currentServer.removeCustomerFromQueue();
+            Server newServer = currentServer.removeCustomerFromQueue(customer);
+            ImList<Server> newServers = this.servers.set(
+                    newServer.getServerIndexNumber(),
+                    newServer);
+            serverBalancer = new ServerBalancer(this.numOfServers, this.qmax, newServers);
+        }
+        return serverBalancer;
+    }
+
+    ServerBalancer finishServingCustomer(Customer customer, Server server) {
+        ServerBalancer serverBalancer = this;
+        Server currentServer = this.servers.get(server.getServerIndexNumber());
+        if (currentServer.getQSize() > 0) {
+            Server newServer = currentServer.finishServingCustomer(customer);
             ImList<Server> newServers = this.servers.set(
                     newServer.getServerIndexNumber(),
                     newServer);
@@ -128,6 +141,20 @@ class ServerBalancer {
             totalCustomersServed += server.getCustomersServed();
         }
         return totalCustomersServed;
+    }
+
+    boolean canExecute(Event event) {
+        return event.canExecute(this.servers);
+    }
+
+    void checkWhichServersCanExecute() {
+        for (Server server : this.servers) {
+            System.out.println(String.format(("%d %b"), server.getServerNumber(), server.isAvailable()));
+        }
+    }
+
+    Server getServerWithIndex(int index) {
+        return this.servers.get(index);
     }
 
     @Override

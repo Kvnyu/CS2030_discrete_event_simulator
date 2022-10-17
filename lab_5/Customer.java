@@ -10,7 +10,8 @@ class Customer {
         this.arrivalTime = arrivalTime;
         this.serviceTime = serviceTime;
         this.customerNumber = customerNumber;
-        System.out.println(String.format("customer %s serviceTime:%f", this.customerNumber, this.serviceTime));
+        System.out.println(String.format("customer %s serviceTime:%f",
+                this.customerNumber, this.serviceTime));
     }
 
     Customer(double arrivalTime, int customerNumber) {
@@ -29,6 +30,9 @@ class Customer {
     }
 
     double getServiceTime() {
+        if (this.serviceTime < 0) {
+            System.out.println(String.format("Customer %d tried to access negative service time", this.customerNumber));
+        }
         return this.serviceTime;
     }
 
@@ -46,6 +50,7 @@ class Customer {
     }
 
     Customer cloneWithServiceTime(double serviceTime) {
+        System.out.println(String.format("%d", this.getCustomerNumber()));
         return new Customer(this.arrivalTime, serviceTime, this.customerNumber);
     }
 

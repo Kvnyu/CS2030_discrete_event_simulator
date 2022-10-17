@@ -4,6 +4,7 @@ class Server {
     private final int qmax;
     private final int qsize;
     private final int customersServed;
+    private final boolean isAvailable;
     private final double totalCustomerWaitTime;
     private static final double THRESHOLD = 1E-15;
 
@@ -23,31 +24,40 @@ class Server {
         this(number, qmax, qsize, availableTime, customersServed, 0.0);
     }
 
+    Server(int number, int qmax, int qsize, double availableTime, int customersServed, double totalCustomerWaitTime) {
+        this(number, qmax, qsize, availableTime, customersServed, 0.0, false);
+    }
+
     Server(int number, int qmax, int qsize, double availableTime,
-            int customersServed, double totalCustomerWaitTime) {
+            int customersServed, double totalCustomerWaitTime, boolean isAvailable) {
         this.number = number;
         this.qmax = qmax;
         this.qsize = qsize;
         this.availableTime = availableTime;
         this.customersServed = customersServed;
         this.totalCustomerWaitTime = totalCustomerWaitTime;
+        this.isAvailable = isAvailable;
     }
 
     boolean isFreeAt(double arrivalTime) {
         return availableTime - arrivalTime < THRESHOLD;
     }
 
+    boolean isAvailable() {
+        return this.isAvailable;
+    }
+
     Server serve(Customer customer) {
         return new Server(this.number, this.qmax, this.qsize,
                 customer.getDoneTime(), this.customersServed + 1,
-                this.totalCustomerWaitTime);
+                this.totalCustomerWaitTime, false);
     }
 
     Server serveFromQueue(Customer customer) {
         return new Server(
                 this.number, this.qmax, this.qsize,
                 this.availableTime,
-                this.customersServed + 1, this.totalCustomerWaitTime);
+                this.customersServed + 1, this.totalCustomerWaitTime, false);
     }
 
     boolean hasSpaceInQueue() {
@@ -74,16 +84,22 @@ class Server {
     // next be available now
     Server addCustomerToQueue(Customer customer) {
         return new Server(this.number, this.qmax, this.qsize + 1,
-                this.availableTime + customer.getServiceTime(),
+                this.availableTime,
                 this.customersServed,
-                this.totalCustomerWaitTime + (this.availableTime - customer.getArrivalTime()));
+                this.totalCustomerWaitTime + (this.availableTime - customer.getArrivalTime()), this.isAvailable);
     }
 
-    Server removeCustomerFromQueue() {
+    Server removeCustomerFromQueue(Customer customer) {
         int newQsize = Math.max(0, this.qsize - 1);
         return new Server(this.number, this.qmax,
-                newQsize, this.availableTime, this.customersServed,
-                this.totalCustomerWaitTime);
+                newQsize, this.availableTime + customer.getServiceTime(), this.customersServed,
+                this.totalCustomerWaitTime, true);
+    }
+
+    Server finishServingCustomer(Customer customer) {
+        return new Server(this.number, this.qmax,
+                qsize, this.availableTime, this.customersServed,
+                this.totalCustomerWaitTime, true);
     }
 
     @Override

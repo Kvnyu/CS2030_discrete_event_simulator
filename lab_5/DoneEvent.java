@@ -28,7 +28,11 @@ class DoneEvent extends AssignedEvent {
 
     @Override
     Pair<Event, ServerBalancer> getNextEvent(ServerBalancer serverBalancer) {
+        ServerBalancer newServerBalancer = serverBalancer.finishServingCustomer(this.getCustomer(), this.getServer());
+        // if server has waiting customer, return new serve event
+        // else, return a terminal event??
+        // Make each server store the customer queue in a list in the server
         return new Pair<Event, ServerBalancer>(
-                new TerminalEvent(this.getCustomer()), serverBalancer);
+                new TerminalEvent(this.getCustomer()), newServerBalancer);
     }
 }
