@@ -28,7 +28,8 @@ abstract class Event {
         this(customer, isTerminalEvent, priority, eventTime, true);
     }
 
-    Event(Customer customer, boolean isTerminalEvent, int priority, double eventTime, boolean readyToExecute) {
+    Event(Customer customer, boolean isTerminalEvent, int priority,
+            double eventTime, boolean readyToExecute) {
         this.priority = priority;
         this.customer = customer;
         this.isTerminalEvent = isTerminalEvent;

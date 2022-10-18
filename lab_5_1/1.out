@@ -1,0 +1,42 @@
+1.000 1 arrives
+1.000 1 serves by 1
+customer 1 1.0 1.0
+server wait time: 0.0
+new server wait time: 0.0
+1.500 1 done serving by 1
+2.000 2 arrives
+2.000 2 serves by 1
+customer 2 2.0 2.0
+server wait time: 0.0
+new server wait time: 0.0
+3.000 2 done serving by 1
+3.000 3 arrives
+3.000 3 serves by 1
+customer 3 3.0 3.0
+server wait time: 0.0
+new server wait time: 0.0
+4.000 4 arrives
+4.000 4 waits at 1
+4.500 3 done serving by 1
+4.500 4 serves by 1
+customer 4 4.0 4.5
+server wait time: 0.0
+new server wait time: 0.5
+5.000 5 arrives
+5.000 5 waits at 1
+6.000 6 arrives
+6.0 6 leaves
+6.500 4 done serving by 1
+6.500 5 serves by 1
+customer 5 5.0 6.5
+server wait time: 0.5
+new server wait time: 2.0
+7.000 7 arrives
+7.000 7 waits at 1
+9.000 5 done serving by 1
+9.000 7 serves by 1
+customer 7 7.0 9.0
+server wait time: 2.0
+new server wait time: 4.0
+12.000 7 done serving by 1
+[0.667 6 1]

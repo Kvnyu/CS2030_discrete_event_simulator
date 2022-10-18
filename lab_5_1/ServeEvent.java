@@ -20,7 +20,7 @@ class ServeEvent extends AssignedEvent {
         if (this.isReadyToExecute()) {
             double serviceTime = serviceTimeSupplier.get();
             server = server.startServing(this.getCustomer(),
-                    serviceTime, this.serveFromQueue);
+                    serviceTime, this.serveFromQueue, this.eventTime);
             newServerBalancer = serverBalancer.updateServer(server);
             event = new DoneEvent(this.getCustomer(),
                     this.getServerNumber(), this.serviceTimeSupplier,

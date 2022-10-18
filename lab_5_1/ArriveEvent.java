@@ -27,7 +27,8 @@ class ArriveEvent extends Event {
         } else if (serverBalancer.isThereServerWithSpaceInQueue()) {
             // Create new serveEvent with server and customer
             Server serverWithSpaceInQueue = serverBalancer.getServerWithSpaceInQueue();
-            WaitEvent waitEvent = new WaitEvent(this.customer, serverWithSpaceInQueue.getServerNumber(), this.eventTime,
+            WaitEvent waitEvent = new WaitEvent(this.customer,
+                    serverWithSpaceInQueue.getServerNumber(), this.eventTime,
                     this.serviceTimeSupplier,
                     false);
             return new Pair<Event, ServerBalancer>(waitEvent, serverBalancer);

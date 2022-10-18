@@ -17,7 +17,8 @@ class WaitEvent extends AssignedEvent {
         // System.out.println(server.getCustomers());
         server = server.addCustomerToQueue(this.getCustomer());
         ServerBalancer newServerBalancer = serverBalancer.updateServer(server);
-        ServeEvent serveEvent = new ServeEvent(this.customer, this.serverNumber, server.getNextAvailableAt(),
+        ServeEvent serveEvent = new ServeEvent(this.customer, this.serverNumber,
+                server.getNextAvailableAt(),
                 serviceTimeSupplier, true, false);
 
         return new Pair<Event, ServerBalancer>(serveEvent, newServerBalancer);
