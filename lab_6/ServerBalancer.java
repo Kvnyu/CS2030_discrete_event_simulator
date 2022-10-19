@@ -1,41 +1,46 @@
+import java.util.function.Supplier;
+
 class ServerBalancer {
     private final int numOfServers;
     private final int qmax;
     private final ImList<Server> servers;
+    private final Supplier<Double> restTimes;
 
-    ServerBalancer(int numOfServers, int qmax) {
+    ServerBalancer(int numOfServers, int qmax, Supplier<Double> restTimes) {
         this.numOfServers = numOfServers;
         this.qmax = qmax;
+        this.restTimes = restTimes;
 
         ImList<Server> servers = new ImList<Server>();
 
         for (int i = 0; i < this.numOfServers; i++) {
-            servers = servers.add(new Server(i + 1, this.qmax));
+            servers = servers.add(new Server(i + 1, this.qmax, this.restTimes));
         }
 
         this.servers = servers;
     }
 
-    ServerBalancer(int numOfServers, int qmax, ImList<Server> servers) {
+    ServerBalancer(int numOfServers, int qmax, Supplier<Double> restTimes, ImList<Server> servers) {
         this.numOfServers = numOfServers;
         this.qmax = qmax;
         this.servers = servers;
+        this.restTimes = restTimes;
         // System.out.println(this.servers);
     }
 
-    boolean isThereAServerAvailable() {
+    boolean isThereAServerAvailableAt(double eventTime) {
         for (Server server : this.servers) {
-            if (server.isAvailable()) {
+            if (server.isAvailableAt(eventTime)) {
                 return true;
             }
         }
         return false;
     }
 
-    Server getAvailableServer() {
+    Server getAvailableServerAt(double eventTime) {
         Server availableServer = this.servers.get(0);
         for (Server server : this.servers) {
-            if (server.isAvailable()) {
+            if (server.isAvailableAt(eventTime)) {
                 return server;
             }
         }
@@ -74,7 +79,7 @@ class ServerBalancer {
     }
 
     ServerBalancer updateListOfServers(ImList<Server> servers) {
-        return new ServerBalancer(this.numOfServers, this.qmax, servers);
+        return new ServerBalancer(this.numOfServers, this.qmax, this.restTimes, servers);
     }
 
     double getTotalCustomerWaitTime() {

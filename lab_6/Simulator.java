@@ -17,7 +17,8 @@ class Simulator {
     String simulate() {
         int customerNumber = 1;
         PQ<Event> queue = new PQ<Event>(new EventComparator());
-        ServerBalancer serverBalancer = new ServerBalancer(this.numOfServers, this.qmax);
+        ServerBalancer serverBalancer = new ServerBalancer(this.numOfServers,
+                this.qmax, this.restTimes);
 
         for (Pair<Double, Supplier<Double>> customerPair : this.inputTimes) {
 

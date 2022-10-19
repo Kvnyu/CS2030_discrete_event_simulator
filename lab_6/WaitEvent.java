@@ -4,6 +4,10 @@ import java.util.function.Supplier;
 class WaitEvent extends AssignedEvent {
     private final Supplier<Double> serviceTimeSupplier;
 
+    private final int waitServer = 2;
+    private final int waitCustomer = 6;
+    private final double waitTime = 3.0;
+
     WaitEvent(Customer customer, int serverNumber, double eventTime,
             Supplier<Double> serviceTimeSupplier,
             boolean serveFromQueue) {
@@ -17,8 +21,14 @@ class WaitEvent extends AssignedEvent {
         // System.out.println(server.getCustomers());
         server = server.addCustomerToQueue(this.getCustomer());
         ServerBalancer newServerBalancer = serverBalancer.updateServer(server);
+        double serviceTime = Math.max(server.getNextAvailableAt(), this.customer.getArrivalTime());
+        // System.out.println("The next available time is: " +
+        // server.getNextAvailableAt());
+        // System.out.println("The customer's arriaval time is " +
+        // this.customer.getArrivalTime());
+        // System.out.println("The service time is " + serviceTime);
         ServeEvent serveEvent = new ServeEvent(this.customer, this.serverNumber,
-                server.getNextAvailableAt(),
+                serviceTime,
                 serviceTimeSupplier, true, false);
 
         return new Pair<Event, ServerBalancer>(serveEvent, newServerBalancer);

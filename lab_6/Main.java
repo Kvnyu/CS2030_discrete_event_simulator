@@ -14,20 +14,23 @@ class Main {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        ImList<Pair<Double, Supplier<Double>>> inputTimes = new ImList<Pair<Double, Supplier<Double>>>();
+        ImList<Pair<Double,Supplier<Double>>> inputTimes = 
+            new ImList<Pair<Double,Supplier<Double>>>();
 
         int numOfServers = sc.nextInt();
         int qmax = sc.nextInt();
         int numOfCustomers = sc.nextInt();
         double probRest = sc.nextDouble();
 
-        inputTimes = new ImList<Pair<Double, Supplier<Double>>>(
-                Stream.<Pair<Double, Supplier<Double>>>generate(() -> new Pair<Double, Supplier<Double>>(
+        inputTimes = new ImList<Pair<Double,Supplier<Double>>>(
+                Stream.<Pair<Double, Supplier<Double>>>generate(() -> 
+                    new Pair<Double, Supplier<Double>>(
                         sc.nextDouble(), () -> sc.nextDouble()))
-                        .limit(numOfCustomers)
-                        .toList());
+                .limit(numOfCustomers)
+                .toList());
 
-        Supplier<Double> restTimes = () -> RNG_REST.nextDouble() < probRest ? genRestPeriod() : 0.0;
+        Supplier<Double> restTimes = () ->
+            RNG_REST.nextDouble() < probRest ? genRestPeriod() : 0.0;
 
         Simulator sim = new Simulator(numOfServers, qmax, inputTimes, restTimes);
         System.out.println(sim.simulate());

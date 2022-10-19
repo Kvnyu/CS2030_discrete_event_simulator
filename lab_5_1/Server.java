@@ -79,9 +79,10 @@ class Server {
         double startServingTime;
         double currentCustomerWaitTime = eventTime - customer.getArrivalTime();
         double newTotalCustomerWaitTime = this.totalCustomerWaitTime + currentCustomerWaitTime;
-        System.out.println("customer " + customer.toString() + " " + customer.getArrivalTime() + " " + eventTime);
-        System.out.println("server wait time: " + this.totalCustomerWaitTime);
-        System.out.println("new server wait time: " + newTotalCustomerWaitTime);
+        // System.out.println("customer " + customer.toString() + " " +
+        // customer.getArrivalTime() + " " + eventTime);
+        // System.out.println("server wait time: " + this.totalCustomerWaitTime);
+        // System.out.println("new server wait time: " + newTotalCustomerWaitTime);
         if (serveFromQueue) {
             startServingTime = this.getNextAvailableAt();
         } else {

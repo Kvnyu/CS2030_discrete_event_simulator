@@ -15,7 +15,7 @@ class Customer {
     }
 
     String getFormattedArrivalTime() {
-        NumberFormat formatter = new DecimalFormat("#0.00");
+        NumberFormat formatter = new DecimalFormat("#0.0");
         return formatter.format(this.getArrivalTime());
     }
 
