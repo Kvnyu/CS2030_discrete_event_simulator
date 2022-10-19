@@ -3,9 +3,6 @@ import java.util.function.Supplier;
 class ServeEvent extends AssignedEvent {
     private final Supplier<Double> serviceTimeSupplier;
     private final Boolean serveFromQueue;
-    private final int waitServer = 2;
-    private final int waitCustomer = 7;
-    private final double waitTime = 9.0;
 
     ServeEvent(Customer customer, int serverNumber, double eventTime,
             Supplier<Double> serviceTimeSupplier,
@@ -49,11 +46,6 @@ class ServeEvent extends AssignedEvent {
 
     @Override
     public String toString() {
-
-        if (this.getServerNumber() == waitServer &&
-                waitCustomer == customer.getCustomerNumber() && this.getEventTime() > waitTime) {
-            throw new IllegalArgumentException("Hi");
-        }
         return String.format("%s %s serves by %s",
                 this.getFormattedEventTime(),
                 this.getCustomer(),

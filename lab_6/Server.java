@@ -63,10 +63,14 @@ class Server {
         return this.isAvailable && this.nextAvailableAt <= eventTime;
     }
 
-    boolean hasSpaceInQueue() {
+    boolean hasSpaceInQueueAt(double eventTime) {
         // System.out.println(String.format("%d %d", this.maxQSize,
         // this.getQueueSize()));
-        return this.maxQSize - this.getQueueSize() + 1 > 0;
+        if (this.nextAvailableAt <= eventTime) {
+            return this.maxQSize - this.getQueueSize() > 0;
+        } else {
+            return this.maxQSize - this.getQueueSize() + 1 > 0;
+        }
     }
 
     int getQueueSize() {

@@ -47,22 +47,22 @@ class ServerBalancer {
         return availableServer;
     }
 
-    boolean isThereServerWithSpaceInQueue() {
+    boolean isThereServerWithSpaceInQueueAt(double eventTime) {
         for (Server server : this.servers) {
-            if (server.hasSpaceInQueue()) {
+            if (server.hasSpaceInQueueAt(eventTime)) {
                 return true;
             }
         }
         return false;
     }
 
-    Server getServerWithSpaceInQueue() {
+    Server getServerWithSpaceInQueueAt(double eventTime) {
         Server serverWithSpaceInQueue = this.servers.get(0);
         for (Server server : this.servers) {
             // System.out.print(server.getServerNumber());
             // System.out.print(" ");
             // System.out.println(server.getCustomers());
-            if (server.hasSpaceInQueue()) {
+            if (server.hasSpaceInQueueAt(eventTime)) {
                 return server;
             }
         }

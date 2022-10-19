@@ -1,12 +1,7 @@
-import java.rmi.ServerError;
 import java.util.function.Supplier;
 
 class WaitEvent extends AssignedEvent {
     private final Supplier<Double> serviceTimeSupplier;
-
-    private final int waitServer = 2;
-    private final int waitCustomer = 6;
-    private final double waitTime = 3.0;
 
     WaitEvent(Customer customer, int serverNumber, double eventTime,
             Supplier<Double> serviceTimeSupplier,
