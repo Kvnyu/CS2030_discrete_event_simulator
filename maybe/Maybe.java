@@ -34,12 +34,17 @@ class Maybe<T> {
         }
     }
 
+    T unwrap() {
+        return this.thing;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj.getClass() != this.getClass()) {
             return false;
         }
-        final Maybe<T> other = (Maybe<T>) obj;
+        final Maybe<?> other = (Maybe<?>) obj;
+        return other.unwrap() == this.unwrap();
     }
 
     @Override
