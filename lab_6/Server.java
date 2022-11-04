@@ -23,7 +23,8 @@ class Server {
 
     Server(int serverNumber, int maxQSize, Supplier<Double> restTimes,
             int totalCustomersServed, double nextAvailableAt) {
-        this(serverNumber, maxQSize, restTimes, totalCustomersServed, 0.0, nextAvailableAt);
+        this(serverNumber, maxQSize, restTimes,
+                totalCustomersServed, 0.0, nextAvailableAt);
     }
 
     Server(int serverNumber, int maxQSize, Supplier<Double> restTimes, int totalCustomersServed,
@@ -132,21 +133,19 @@ class Server {
         return this.nextAvailableAt;
     }
 
-    Server finishServing() {
-        Customer finishedCustomer = this.customers.get(0);
-        ImList<Customer> newCustomers = this.customers.remove(0);
+    Pair<Server, Double> finishServing() {
         // double newTotalCustomerWaitTime = this.totalCustomerWaitTime
         // + (this.nextAvailableAt - finishedCustomer.getArrivalTime());
-        int newTotalCustomersServed = this.totalCustomersServed + 1;
         // System.out.println(newCustomers);
         double restTime = this.restTimes.get();
         double newNextAvailableAt = restTime + this.nextAvailableAt;
         // System.out.println(
         // "Server will be resting for " + restTime + " and next available at " +
         // newNextAvailableAt);
-        return new Server(this.serverNumber, this.maxQSize, this.restTimes,
-                newTotalCustomersServed, this.totalCustomerWaitTime,
-                true, newNextAvailableAt, newCustomers);
+
+        return new Pair<Server, Double>(new Server(this.serverNumber, this.maxQSize, this.restTimes,
+                this.totalCustomersServed, this.totalCustomerWaitTime,
+                false, newNextAvailableAt, this.customers), restTime);
     }
 
     boolean hasCustomersInQueue() {
@@ -167,6 +166,17 @@ class Server {
 
     ImList<Customer> getCustomers() {
         return this.customers;
+    }
+
+    Server returnFromRest() {
+        ImList<Customer> newCustomers = this.customers.remove(0);
+        int newTotalCustomersServed = this.totalCustomersServed + 1;
+
+        return new Server(this.serverNumber, this.maxQSize, this.restTimes,
+                newTotalCustomersServed,
+                this.totalCustomerWaitTime, true,
+                this.nextAvailableAt, newCustomers);
+
     }
 
     @Override

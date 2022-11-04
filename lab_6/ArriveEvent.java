@@ -21,7 +21,7 @@ class ArriveEvent extends Event {
             // Create new serveEvent with server and customer
             ServeEvent serveEvent = new ServeEvent(this.getCustomer(),
                     availableServer.getServerNumber(),
-                    this.getCustomer().getArrivalTime(), serviceTimeSupplier,
+                    this.getCustomer().getArrivalTime(), this.serviceTimeSupplier,
                     false, false);
             serverBalancer = serverBalancer.updateServer(availableServer);
             return new Pair<Event, ServerBalancer>(serveEvent, serverBalancer);
@@ -39,12 +39,6 @@ class ArriveEvent extends Event {
                 this.customer, this.customer.getArrivalTime()),
                 serverBalancer);
     }
-
-    // // TODO: Change this name
-    // String formatDouble(Double number) {
-    // NumberFormat formatter = new DecimalFormat("#0.0");
-    // return formatter.format(number);
-    // }
 
     @Override
     public String toString() {
