@@ -49,23 +49,51 @@ class Expr<T> {
             return new Expr<T>(Optional.of(this), Optional.of(operator),
                     Optional.of(otherValue));
         } else {
-            if (this.operator.map(x -> x.compareTo(operator)).orElse(0) <= 0) {
+            Expr<T> rightmostNode = this.getRightmostNode();
+            // System.out.println(
+            // String.format("Rightmost node left: %s and right: %s",
+            // rightmostNode.leftExpr,
+            // rightmostNode.rightExpr));
+            if (rightmostNode.operator.map(x -> x.compareTo(operator)).orElse(0) <= 0) {
                 // If the precendence of the operator is lower
-                return new Expr<T>(Optional.<Expr<T>>of(this), Optional.<Operator<T>>of(operator),
-                        Optional.<Expr<T>>of(otherValue));
+                return extendAboveRightmostNode(operator, otherValue);
             } else {
                 // If the precedence of the operator is higher
-                return extendRightmostChild(operator, otherValue);
+                return extendRightmostLeaf(operator, otherValue);
             }
         }
     }
 
-    public Expr<T> extendRightmostChild(Operator<T> operator, Expr<T> otherValue) {
+    public Expr<T> extendAboveRightmostNode(Operator<T> operator, Expr<T> otherValue) {
+        if (!this.rightExpr.map(x -> x.isPure).orElseThrow()) {
+            // If we have not yet reached the rightmost inner node
+            Optional<Operator<T>> newOp = this.operator;
+            Optional<Expr<T>> newRightExpr = this.rightExpr
+                    .<Expr<T>>map(x -> x.extendAboveRightmostNode(operator, otherValue));
+            return new Expr<T>(this.leftExpr, newOp, newRightExpr);
+        } else {
+            // If we have reached the rightmost node
+            Optional<Operator<T>> newOp = Optional.of(operator);
+            Optional<Expr<T>> newRightExpr = Optional.of(otherValue);
+            return new Expr<T>(Optional.of(this), newOp, newRightExpr);
+        }
+
+    }
+
+    public Expr<T> getRightmostNode() {
+        if (this.rightExpr.map(x -> x.isPure).orElseThrow()) {
+            return this;
+        } else {
+            return this.rightExpr.<Expr<T>>map(x -> x.getRightmostNode()).orElse(this);
+        }
+    }
+
+    public Expr<T> extendRightmostLeaf(Operator<T> operator, Expr<T> otherValue) {
         if (!this.isPure) {
             // If are in an internal node
             Optional<Operator<T>> newOp = this.operator;
             Optional<Expr<T>> newRightExpr = this.rightExpr
-                    .<Expr<T>>map(x -> x.extendRightmostChild(operator, otherValue));
+                    .<Expr<T>>map(x -> x.extendRightmostLeaf(operator, otherValue));
             return new Expr<T>(this.leftExpr, newOp, newRightExpr);
         } else {
             // If we have reached the last node
@@ -77,19 +105,19 @@ class Expr<T> {
 
     Optional<T> evaluate() {
         if (this.isPure) {
-            System.out.println(String.format("pure %s", this.value.toString()));
+            // System.out.println(String.format("pure %s", this.value.toString()));
             return this.value;
         } else {
             // is unevaluated
-            System.out.println(this.operator);
+            // System.out.println(this.operator);
             Optional<T> leftValue = this.leftExpr.<T>flatMap(x -> x.evaluate());
             Optional<T> rightValue = this.rightExpr.<T>flatMap(x -> x.evaluate());
-            System.out.println(String.format("left value %s", leftValue.toString()));
-            System.out.println(String.format("right value %s", rightValue.toString()));
+            // // System.out.println(String.format("left value %s", leftValue.toString()));
+            // System.out.println(String.format("right value %s", rightValue.toString()));
             // Fix this to use map later
             Optional<T> evaluatedValue = this.operator
                     .map(x -> x.apply(leftValue.orElseThrow(), rightValue.orElseThrow()));
-            System.out.println(String.format("evaluated value %s", evaluatedValue));
+            // System.out.println(String.format("evaluated value %s", evaluatedValue));
             return evaluatedValue;
         }
     }
