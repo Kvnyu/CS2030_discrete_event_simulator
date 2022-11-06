@@ -8,12 +8,23 @@ class IntExpr extends AbstractIntExpr {
         return new IntExpr(expr);
     }
 
-    // public IntExpr mul(int otherValue){
-    // return IntExpr.of(newValue);
-    // }
+    public IntExpr add(int otherValue) {
+        return new IntExpr(this.op(AbstractIntExpr.addition, otherValue));
+    }
 
-    // public IntExpr add(int otherValue){
-    // int newValue = AbstractIntExpr.addition.apply(this.getValue(), otherValue);
-    // return IntExpr.of(newValue);
-    // }
+    public IntExpr mul(int otherValue) {
+        return new IntExpr(this.op(AbstractIntExpr.multiplication, otherValue));
+    }
+
+    public IntExpr div(int otherValue) {
+        return new IntExpr(this.op(AbstractIntExpr.division, otherValue));
+    }
+
+    public IntExpr exp(int otherValue) {
+        return new IntExpr(this.op(AbstractIntExpr.exponentiation, otherValue));
+    }
+
+    public IntExpr sub(int otherValue) {
+        return new IntExpr(this.op(AbstractIntExpr.subtraction, otherValue));
+    }
 }
