@@ -6,6 +6,16 @@ class Expr<T> {
     private final Optional<Operator<T>> operator;
     private final Optional<Expr<T>> rightExpr;
     private final boolean isPure;
+    private final boolean isInnerExpression;
+
+    Expr(Expr<T> expr, boolean isInnerExpression) {
+        this.value = expr.value;
+        this.leftExpr = expr.leftExpr;
+        this.operator = expr.operator;
+        this.rightExpr = expr.rightExpr;
+        this.isPure = expr.isPure;
+        this.isInnerExpression = isInnerExpression;
+    }
 
     Expr(Expr<T> expr) {
         this.value = expr.value;
@@ -13,6 +23,7 @@ class Expr<T> {
         this.operator = expr.operator;
         this.rightExpr = expr.rightExpr;
         this.isPure = expr.isPure;
+        this.isInnerExpression = false;
     }
 
     Expr(T value) {
@@ -25,6 +36,7 @@ class Expr<T> {
         this.operator = Optional.empty();
         this.rightExpr = Optional.empty();
         this.isPure = true;
+        this.isInnerExpression = false;
     }
 
     Expr(Optional<Expr<T>> leftExpr, Optional<Operator<T>> operator, Optional<Expr<T>> rightExpr) {
@@ -33,6 +45,7 @@ class Expr<T> {
         this.operator = operator;
         this.rightExpr = rightExpr;
         this.isPure = false;
+        this.isInnerExpression = false;
     }
 
     public static <T> Expr<T> of(T value) {
@@ -40,71 +53,39 @@ class Expr<T> {
     }
 
     public Expr<T> op(Operator<T> operator, T otherValue) {
-        return this.op(operator, Expr.<T>of(otherValue));
+        return this.execOp(operator, Expr.<T>of(otherValue));
     }
 
-    public Expr<T> op(Operator<T> operator, Expr<T> otherValue) {
+    public Expr<T> op(Operator<T> operator, Expr<T> otherExpr) {
+        return this.execOp(operator, new Expr<T>(otherExpr, true));
+    }
+
+    public Expr<T> execOp(Operator<T> operator, Expr<T> otherValue) {
         if (this.isPure) {
             // If this expr is a single value
             return new Expr<T>(Optional.of(this), Optional.of(operator),
                     Optional.of(otherValue));
         } else {
-            Expr<T> rightmostNode = this.getRightmostNode();
-            // System.out.println(
-            // String.format("Rightmost node left: %s and right: %s",
-            // rightmostNode.leftExpr,
-            // rightmostNode.rightExpr));
-            if (rightmostNode.operator.map(x -> x.compareTo(operator)).orElse(0) <= 0) {
-                // If the precendence of the operator is lower
-                // System.out.println("extend above rightmost ndoe");
-                return extendAboveRightmostNode(operator, otherValue);
-
-            } else {
-                // If the precedence of the operator is higher
-                // System.out.println("extend rightmost leaf");
-                return extendRightmostLeaf(operator, otherValue);
-            }
+            return extendAboveRightmostNode(operator, otherValue);
         }
     }
 
     public Expr<T> extendAboveRightmostNode(Operator<T> operator, Expr<T> otherValue) {
-        if (this.operator.map(x -> x.compareTo(operator)).orElse(0) > 0) {
-            // If we have not yet reached the rightmost inner node
+        if (this.operator.map(x -> x.compareTo(operator)).orElse(0) > 0 && !this.isInnerExpression) {
+            // If we have not yet reached the rightmost inner node or if we haven't reached
+            // an inner expression yet
             Optional<Operator<T>> newOp = this.operator;
             Optional<Expr<T>> newRightExpr = this.rightExpr
                     .<Expr<T>>map(x -> x.extendAboveRightmostNode(operator, otherValue));
             return new Expr<T>(this.leftExpr, newOp, newRightExpr);
         } else {
             // If we have reached the rightmost node that has precendence lower than the new
-            // op
+            // op or if we have hit an inner expression
             Optional<Operator<T>> newOp = Optional.of(operator);
             Optional<Expr<T>> newRightExpr = Optional.of(otherValue);
             return new Expr<T>(Optional.of(this), newOp, newRightExpr);
         }
 
-    }
-
-    public Expr<T> getRightmostNode() {
-        if (this.rightExpr.orElseThrow().isPure) {
-            return this;
-        } else {
-            return this.rightExpr.<Expr<T>>map(x -> x.getRightmostNode()).orElse(this);
-        }
-    }
-
-    public Expr<T> extendRightmostLeaf(Operator<T> operator, Expr<T> otherValue) {
-        if (!this.isPure) {
-            // If are in an internal node
-            Optional<Operator<T>> newOp = this.operator;
-            Optional<Expr<T>> newRightExpr = this.rightExpr
-                    .<Expr<T>>map(x -> x.extendRightmostLeaf(operator, otherValue));
-            return new Expr<T>(this.leftExpr, newOp, newRightExpr);
-        } else {
-            // If we have reached the last node
-            Optional<Operator<T>> newOp = Optional.of(operator);
-            Optional<Expr<T>> newRightExpr = Optional.of(otherValue);
-            return new Expr<T>(Optional.of(this), newOp, newRightExpr);
-        }
     }
 
     Optional<T> evaluate() {
