@@ -56,23 +56,27 @@ class Expr<T> {
             // rightmostNode.rightExpr));
             if (rightmostNode.operator.map(x -> x.compareTo(operator)).orElse(0) <= 0) {
                 // If the precendence of the operator is lower
+                // System.out.println("extend above rightmost ndoe");
                 return extendAboveRightmostNode(operator, otherValue);
+
             } else {
                 // If the precedence of the operator is higher
+                // System.out.println("extend rightmost leaf");
                 return extendRightmostLeaf(operator, otherValue);
             }
         }
     }
 
     public Expr<T> extendAboveRightmostNode(Operator<T> operator, Expr<T> otherValue) {
-        if (!this.rightExpr.map(x -> x.isPure).orElseThrow()) {
+        if (this.operator.map(x -> x.compareTo(operator)).orElse(0) > 0) {
             // If we have not yet reached the rightmost inner node
             Optional<Operator<T>> newOp = this.operator;
             Optional<Expr<T>> newRightExpr = this.rightExpr
                     .<Expr<T>>map(x -> x.extendAboveRightmostNode(operator, otherValue));
             return new Expr<T>(this.leftExpr, newOp, newRightExpr);
         } else {
-            // If we have reached the rightmost node
+            // If we have reached the rightmost node that has precendence lower than the new
+            // op
             Optional<Operator<T>> newOp = Optional.of(operator);
             Optional<Expr<T>> newRightExpr = Optional.of(otherValue);
             return new Expr<T>(Optional.of(this), newOp, newRightExpr);
@@ -81,7 +85,7 @@ class Expr<T> {
     }
 
     public Expr<T> getRightmostNode() {
-        if (this.rightExpr.map(x -> x.isPure).orElseThrow()) {
+        if (this.rightExpr.orElseThrow().isPure) {
             return this;
         } else {
             return this.rightExpr.<Expr<T>>map(x -> x.getRightmostNode()).orElse(this);
@@ -112,7 +116,7 @@ class Expr<T> {
             // System.out.println(this.operator);
             Optional<T> leftValue = this.leftExpr.<T>flatMap(x -> x.evaluate());
             Optional<T> rightValue = this.rightExpr.<T>flatMap(x -> x.evaluate());
-            // // System.out.println(String.format("left value %s", leftValue.toString()));
+            // System.out.println(String.format("left value %s", leftValue.toString()));
             // System.out.println(String.format("right value %s", rightValue.toString()));
             // Fix this to use map later
             Optional<T> evaluatedValue = this.operator
