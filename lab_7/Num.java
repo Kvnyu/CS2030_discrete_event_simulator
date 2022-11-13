@@ -1,8 +1,14 @@
 import java.util.Optional;
 
 public class Num extends AbstractNum<Integer> {
+    protected Num() {
+        super(Optional.empty());
+    }
+
     protected Num(int i) {
-        super(i >= 0 ? Optional.<Integer>of(i) : Optional.empty());
+        super(AbstractNum.valid.test(i)
+                ? Optional.<Integer>of(i)
+                : Optional.empty());
     }
 
     protected Num(Optional<Integer> i) {
@@ -11,6 +17,10 @@ public class Num extends AbstractNum<Integer> {
 
     protected Num(AbstractNum<Integer> i) {
         super(i.opt);
+    }
+
+    static Num invalid() {
+        return new Num();
     }
 
     static Num of(int i) {
@@ -22,7 +32,7 @@ public class Num extends AbstractNum<Integer> {
     }
 
     static Num one() {
-        return new Num(new AbstractNum<Integer>(1));
+        return new Num(AbstractNum.zero().opt.map((x -> AbstractNum.s.apply(x))));
     }
 
     Num succ() {
@@ -31,41 +41,46 @@ public class Num extends AbstractNum<Integer> {
 
     Num add(Num other) {
         if (!other.isValid()) {
-            return Num.of(-1);
+            return Num.invalid();
         }
         Optional<Integer> maybeNum = this.opt
                 .flatMap((first) -> other.opt.map(second -> {
                     int result = first.intValue();
-                    for (int i = second.intValue(); i > 0; i--) {
+                    Num i = Num.zero();
+                    while (!i.equals(new Num(second))) {
                         result = AbstractNum.s.apply(result);
+                        i = new Num(i.opt.map(x -> AbstractNum.s.apply(x)));
                     }
                     return result;
-                }));
+                })).filter(AbstractNum.valid);
 
         return new Num(maybeNum);
     }
 
     Num sub(Num other) {
         if (!other.isValid()) {
-            return Num.of(-1);
+            return Num.invalid();
         }
-        AbstractNum<Integer> negativeOther = new AbstractNum<Integer>(other.opt.map(x -> AbstractNum.n.apply(x)));
-        return new Num(negativeOther).add(this);
+        AbstractNum<Integer> negativeOther = new AbstractNum<Integer>(
+                other.opt.map(x -> AbstractNum.n.apply(x)));
+        Num result = new Num(negativeOther).add(this);
+        return result;
     }
 
     Num mul(Num other) {
         if (!this.isValid() || !other.isValid()) {
-            return Num.of(-1);
+            return Num.invalid();
         }
-        Optional<Integer> maybeNum = other.opt.map((value) -> {
+        Optional<Integer> maybeNum = other.opt.map((second) -> {
             Num result = Num.zero();
-            for (int i = 0; i < value; i++) {
+            Num i = Num.zero();
+            while (!i.equals(new Num(second))) {
+                i = new Num(i.opt.map(x -> AbstractNum.s.apply(x)));
                 result = result.add(this);
             }
             return result;
-        }).flatMap(value -> value.opt);
-
+        }).flatMap(value -> value.opt).filter(AbstractNum.valid);
         return new Num(maybeNum);
-
     }
+
 }

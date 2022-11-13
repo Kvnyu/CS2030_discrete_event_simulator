@@ -101,7 +101,7 @@ class Expr<T> {
             // System.out.println(String.format("right value %s", rightValue.toString()));
             // Fix this to use map later
             Optional<T> evaluatedValue = this.operator
-                    .map(x -> x.apply(leftValue.orElseThrow(), rightValue.orElseThrow()));
+                    .flatMap(op -> leftValue.flatMap(left -> rightValue.map(right -> op.apply(left, right))));
             // System.out.println(String.format("evaluated value %s", evaluatedValue));
             return evaluatedValue;
         }
