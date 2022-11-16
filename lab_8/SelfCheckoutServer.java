@@ -1,27 +1,27 @@
 import java.util.function.Supplier;
 
-class Server extends AbstractServer {
-    Server(int serverNumber, int maxQSize, Supplier<Double> restTimes) {
+class SelfCheckoutServer extends AbstractServer {
+    SelfCheckoutServer(int serverNumber, int maxQSize, Supplier<Double> restTimes) {
         this(serverNumber, maxQSize, restTimes, 0.0);
     }
 
-    Server(int serverNumber, int maxQSize, Supplier<Double> restTimes, double nextAvailableAt) {
+    SelfCheckoutServer(int serverNumber, int maxQSize, Supplier<Double> restTimes, double nextAvailableAt) {
         this(serverNumber, maxQSize, restTimes, 0, nextAvailableAt);
     }
 
-    Server(int serverNumber, int maxQSize, Supplier<Double> restTimes,
+    SelfCheckoutServer(int serverNumber, int maxQSize, Supplier<Double> restTimes,
             int totalCustomersServed, double nextAvailableAt) {
         this(serverNumber, maxQSize, restTimes,
                 totalCustomersServed, 0.0, nextAvailableAt);
     }
 
-    Server(int serverNumber, int maxQSize, Supplier<Double> restTimes, int totalCustomersServed,
+    SelfCheckoutServer(int serverNumber, int maxQSize, Supplier<Double> restTimes, int totalCustomersServed,
             double totalCustomerWaitTime, double nextAvailableAt) {
         this(serverNumber, maxQSize, restTimes, totalCustomersServed,
                 0.0, true, nextAvailableAt);
     }
 
-    Server(int serverNumber, int maxQSize, Supplier<Double> restTimes,
+    SelfCheckoutServer(int serverNumber, int maxQSize, Supplier<Double> restTimes,
             int totalCustomersServed, double totalCustomerWaitTime,
             boolean isAvailable, double nextAvailableAt) {
         this(serverNumber, maxQSize, restTimes, totalCustomersServed,
@@ -29,7 +29,7 @@ class Server extends AbstractServer {
                 new ImList<Customer>());
     }
 
-    Server(int serverNumber, int maxQSize, Supplier<Double> restTimes,
+    SelfCheckoutServer(int serverNumber, int maxQSize, Supplier<Double> restTimes,
             int totalCustomersServed, double totalCustomerWaitTime,
             boolean isAvailable, double nextAvailableAt,
             ImList<Customer> customers) {
@@ -50,7 +50,7 @@ class Server extends AbstractServer {
         }
     }
 
-    Server startServing(Customer customer, double serviceTime,
+    SelfCheckoutServer startServing(Customer customer, double serviceTime,
             boolean serveFromQueue, double eventTime) {
         double startServingTime;
         double currentCustomerWaitTime = eventTime - customer.getArrivalTime();
@@ -65,19 +65,19 @@ class Server extends AbstractServer {
             customers = this.getCustomers().add(customer);
         }
         if (this.getTotalCustomersServed() == 0) {
-            return new Server(this.getServerNumber(), this.getMaxQSize(), this.getRestTimes(),
+            return new SelfCheckoutServer(this.getServerNumber(), this.getMaxQSize(), this.getRestTimes(),
                     this.getTotalCustomersServed(), newTotalCustomerWaitTime,
                     false, customer.getArrivalTime() + serviceTime, customers);
         }
 
-        return new Server(this.getServerNumber(), this.getMaxQSize(), this.getRestTimes(),
+        return new SelfCheckoutServer(this.getServerNumber(), this.getMaxQSize(), this.getRestTimes(),
                 this.getTotalCustomersServed(), newTotalCustomerWaitTime,
                 false, startServingTime + serviceTime, customers);
     }
 
-    Server addCustomerToQueue(Customer customer) {
+    SelfCheckoutServer addCustomerToQueue(Customer customer) {
         ImList<Customer> customers = this.getCustomers().add(customer);
-        return new Server(this.getServerNumber(), this.getMaxQSize(), this.getRestTimes(),
+        return new SelfCheckoutServer(this.getServerNumber(), this.getMaxQSize(), this.getRestTimes(),
                 this.getTotalCustomersServed(), this.getTotalCustomerWaitTime(),
                 this.isAvailable(), this.getNextAvailableAt(), customers);
     }
@@ -87,7 +87,7 @@ class Server extends AbstractServer {
         double newNextAvailableAt = restTime + this.getNextAvailableAt();
 
         return new Pair<AbstractServer, Double>(
-                new Server(this.getServerNumber(), this.getMaxQSize(), this.getRestTimes(),
+                new SelfCheckoutServer(this.getServerNumber(), this.getMaxQSize(), this.getRestTimes(),
                         this.getTotalCustomersServed(), this.getTotalCustomerWaitTime(),
                         false, newNextAvailableAt, this.getCustomers()),
                 restTime);
@@ -97,11 +97,11 @@ class Server extends AbstractServer {
         return this.getCustomers().get(0);
     }
 
-    Server returnFromRest() {
+    SelfCheckoutServer returnFromRest() {
         ImList<Customer> newCustomers = this.getCustomers().remove(0);
         int newTotalCustomersServed = this.getTotalCustomersServed() + 1;
 
-        return new Server(this.getServerNumber(), this.getMaxQSize(), this.getRestTimes(),
+        return new SelfCheckoutServer(this.getServerNumber(), this.getMaxQSize(), this.getRestTimes(),
                 newTotalCustomersServed,
                 this.getTotalCustomerWaitTime(), true,
                 this.getNextAvailableAt(), newCustomers);

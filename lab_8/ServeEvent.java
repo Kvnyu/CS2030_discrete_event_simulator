@@ -15,7 +15,9 @@ class ServeEvent extends AssignedEvent {
 
     @Override
     Pair<Event, ServerBalancer> getNextEvent(ServerBalancer serverBalancer) {
-        Server server = serverBalancer.getServer(this.serverNumber);
+        // For self-check, just make one single server. Can set the serverNumber in here
+        // when ready to serve
+        AbstractServer server = serverBalancer.getServer(this.serverNumber);
         ServerBalancer newServerBalancer = serverBalancer;
         Event event;
         if (this.isReadyToExecute()) {

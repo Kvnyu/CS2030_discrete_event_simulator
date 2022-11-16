@@ -11,8 +11,8 @@ class DoneEvent extends AssignedEvent {
 
     @Override
     Pair<Event, ServerBalancer> getNextEvent(ServerBalancer serverBalancer) {
-        Server server = serverBalancer.getServer(serverNumber);
-        Pair<Server, Double> serverWithRestTime = server.finishServing();
+        AbstractServer server = serverBalancer.getServer(serverNumber);
+        Pair<AbstractServer, Double> serverWithRestTime = server.finishServing();
         server = serverWithRestTime.first();
         double restTime = serverWithRestTime.second();
         Event event = new ServerRestEvent(this.customer, this.serverNumber,
