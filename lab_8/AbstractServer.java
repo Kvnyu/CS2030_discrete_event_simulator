@@ -9,36 +9,39 @@ abstract class AbstractServer {
     private final boolean isAvailable;
     private final double nextAvailableAt;
     private final Supplier<Double> restTimes;
+    private final boolean isSelfCheckServer;
 
-    AbstractServer(int serverNumber, int maxQSize, Supplier<Double> restTimes) {
-        this(serverNumber, maxQSize, restTimes, 0.0);
+    AbstractServer(boolean isSelfCheckServer, int serverNumber, int maxQSize, Supplier<Double> restTimes) {
+        this(isSelfCheckServer, serverNumber, maxQSize, restTimes, 0.0);
     }
 
-    AbstractServer(int serverNumber, int maxQSize, Supplier<Double> restTimes, double nextAvailableAt) {
-        this(serverNumber, maxQSize, restTimes, 0, nextAvailableAt);
+    AbstractServer(boolean isSelfCheckServer, int serverNumber, int maxQSize, Supplier<Double> restTimes,
+            double nextAvailableAt) {
+        this(isSelfCheckServer, serverNumber, maxQSize, restTimes, 0, nextAvailableAt);
     }
 
-    AbstractServer(int serverNumber, int maxQSize, Supplier<Double> restTimes,
+    AbstractServer(boolean isSelfCheckServer, int serverNumber, int maxQSize, Supplier<Double> restTimes,
             int totalCustomersServed, double nextAvailableAt) {
-        this(serverNumber, maxQSize, restTimes,
+        this(isSelfCheckServer, serverNumber, maxQSize, restTimes,
                 totalCustomersServed, 0.0, nextAvailableAt);
     }
 
-    AbstractServer(int serverNumber, int maxQSize, Supplier<Double> restTimes, int totalCustomersServed,
+    AbstractServer(boolean isSelfCheckServer, int serverNumber, int maxQSize, Supplier<Double> restTimes,
+            int totalCustomersServed,
             double totalCustomerWaitTime, double nextAvailableAt) {
-        this(serverNumber, maxQSize, restTimes, totalCustomersServed,
+        this(isSelfCheckServer, serverNumber, maxQSize, restTimes, totalCustomersServed,
                 0.0, true, nextAvailableAt);
     }
 
-    AbstractServer(int serverNumber, int maxQSize, Supplier<Double> restTimes,
+    AbstractServer(boolean isSelfCheckServer, int serverNumber, int maxQSize, Supplier<Double> restTimes,
             int totalCustomersServed, double totalCustomerWaitTime,
             boolean isAvailable, double nextAvailableAt) {
-        this(serverNumber, maxQSize, restTimes, totalCustomersServed,
+        this(isSelfCheckServer, serverNumber, maxQSize, restTimes, totalCustomersServed,
                 totalCustomerWaitTime, isAvailable, nextAvailableAt,
                 new ImList<Customer>());
     }
 
-    AbstractServer(int serverNumber, int maxQSize, Supplier<Double> restTimes,
+    AbstractServer(boolean isSelfCheckServer, int serverNumber, int maxQSize, Supplier<Double> restTimes,
             int totalCustomersServed, double totalCustomerWaitTime,
             boolean isAvailable, double nextAvailableAt,
             ImList<Customer> customers) {
@@ -50,15 +53,16 @@ abstract class AbstractServer {
         this.isAvailable = isAvailable;
         this.customers = customers;
         this.restTimes = restTimes;
+        this.isSelfCheckServer = isSelfCheckServer;
     }
 
     abstract boolean isAvailableAt(double eventTime);
 
     abstract boolean hasSpaceInQueueAt(double eventTime);
 
-    abstract AbstractServer returnFromRest();
+    abstract AbstractServer returnFromRest(int serverNumber);
 
-    abstract AbstractServer startServing(Customer customer, double serviceTime,
+    abstract AbstractServer startServing(Customer customer, int serverNumber, double serviceTime,
             boolean serveFromQueue, double eventTime);
 
     abstract AbstractServer addCustomerToQueue(Customer customer);
@@ -83,9 +87,9 @@ abstract class AbstractServer {
         return this.customers;
     }
 
-    protected double getNextAvailableAt() {
+    double getNextAvailableAt() {
         return this.nextAvailableAt;
-    }
+    };
 
     protected int getServerNumber() {
         return this.serverNumber;
@@ -113,6 +117,25 @@ abstract class AbstractServer {
 
     protected Supplier<Double> getRestTimes() {
         return this.restTimes;
+    }
+
+    String getServerName(int serverNumber) {
+        if (this.isSelfCheckServer) {
+            return String.format("self-check %d", this.serverNumber);
+        }
+        return Integer.toString(this.serverNumber);
+    };
+
+    AbstractServer getAvailableServer() {
+        return this;
+    }
+
+    AbstractServer getServerWithSpaceInQueueAt(double time) {
+        return this;
+    }
+
+    boolean isSelfCheckServer() {
+        return this.isSelfCheckServer;
     }
 
     @Override

@@ -16,10 +16,13 @@ class ServerBalancer {
         ImList<AbstractServer> servers = new ImList<AbstractServer>();
 
         for (int i = 0; i < this.numOfServers; i++) {
-            servers = servers.add(new Server(i + 1, this.qmax, this.restTimes));
+            servers = servers.add(new Server(false, i + 1, this.qmax, this.restTimes));
         }
 
-        servers = servers.add(new SelfCheckoutServer(numOfServers + 1, this.qmax, this.restTimes));
+        if (numOfSelfCheckoutServers > 0) {
+            servers = servers
+                    .add(new SelfCheckoutServer(numOfSelfCheckoutServers, numOfServers + 1, this.qmax, this.restTimes));
+        }
 
         this.servers = servers;
     }
@@ -35,6 +38,7 @@ class ServerBalancer {
 
     boolean isThereAServerAvailableAt(double eventTime) {
         for (AbstractServer server : this.servers) {
+            System.out.println(server.getNextAvailableAt());
             if (server.isAvailableAt(eventTime)) {
                 return true;
             }
@@ -46,7 +50,7 @@ class ServerBalancer {
         AbstractServer availableServer = this.servers.get(0);
         for (AbstractServer server : this.servers) {
             if (server.isAvailableAt(eventTime)) {
-                return server;
+                return server.getAvailableServer();
             }
         }
         return availableServer;
@@ -75,6 +79,9 @@ class ServerBalancer {
     }
 
     AbstractServer getServer(int serverNumber) {
+        if (serverNumber > this.numOfServers) {
+            return this.servers.get(this.numOfServers);
+        }
         return this.servers.get(serverNumber - 1);
     }
 

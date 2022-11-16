@@ -1,45 +1,88 @@
 import java.util.function.Supplier;
 
 class SelfCheckoutServer extends AbstractServer {
-    SelfCheckoutServer(int serverNumber, int maxQSize, Supplier<Double> restTimes) {
-        this(serverNumber, maxQSize, restTimes, 0.0);
+    //
+    private final ImList<Server> servers;
+    private final int firstServerNumber;
+
+    SelfCheckoutServer(int numOfSelfCheckoutServers, int serverNumber, int maxQSize, Supplier<Double> restTimes) {
+        this(numOfSelfCheckoutServers, serverNumber, maxQSize, restTimes, 0.0);
     }
 
-    SelfCheckoutServer(int serverNumber, int maxQSize, Supplier<Double> restTimes, double nextAvailableAt) {
-        this(serverNumber, maxQSize, restTimes, 0, nextAvailableAt);
+    SelfCheckoutServer(int numOfSelfCheckoutServers, int serverNumber, int maxQSize, Supplier<Double> restTimes,
+            double nextAvailableAt) {
+        this(numOfSelfCheckoutServers, serverNumber, maxQSize, restTimes, 0, nextAvailableAt);
     }
 
-    SelfCheckoutServer(int serverNumber, int maxQSize, Supplier<Double> restTimes,
+    SelfCheckoutServer(int numOfSelfCheckoutServers, int serverNumber, int maxQSize, Supplier<Double> restTimes,
             int totalCustomersServed, double nextAvailableAt) {
-        this(serverNumber, maxQSize, restTimes,
+        this(numOfSelfCheckoutServers, serverNumber, maxQSize, restTimes,
                 totalCustomersServed, 0.0, nextAvailableAt);
     }
 
-    SelfCheckoutServer(int serverNumber, int maxQSize, Supplier<Double> restTimes, int totalCustomersServed,
+    SelfCheckoutServer(int numOfSelfCheckoutServers, int serverNumber, int maxQSize, Supplier<Double> restTimes,
+            int totalCustomersServed,
             double totalCustomerWaitTime, double nextAvailableAt) {
-        this(serverNumber, maxQSize, restTimes, totalCustomersServed,
+        this(numOfSelfCheckoutServers, serverNumber, maxQSize, restTimes, totalCustomersServed,
                 0.0, true, nextAvailableAt);
     }
 
-    SelfCheckoutServer(int serverNumber, int maxQSize, Supplier<Double> restTimes,
+    SelfCheckoutServer(int numOfSelfCheckoutServers, int serverNumber, int maxQSize, Supplier<Double> restTimes,
             int totalCustomersServed, double totalCustomerWaitTime,
             boolean isAvailable, double nextAvailableAt) {
-        this(serverNumber, maxQSize, restTimes, totalCustomersServed,
+        this(numOfSelfCheckoutServers, serverNumber, maxQSize, restTimes, totalCustomersServed,
                 totalCustomerWaitTime, isAvailable, nextAvailableAt,
                 new ImList<Customer>());
     }
 
-    SelfCheckoutServer(int serverNumber, int maxQSize, Supplier<Double> restTimes,
+    SelfCheckoutServer(int numOfSelfCheckoutServers, int serverNumber, int maxQSize, Supplier<Double> restTimes,
+            int totalCustomersServed, double totalCustomerWaitTime,
+            boolean isAvailable, double nextAvailableAt,
+            ImList<Customer> customers, ImList<Server> servers) {
+        super(false, serverNumber, maxQSize, restTimes, totalCustomersServed, totalCustomerWaitTime, isAvailable,
+                nextAvailableAt,
+                customers);
+        this.firstServerNumber = serverNumber;
+        this.servers = servers;
+    }
+
+    SelfCheckoutServer(int numOfSelfCheckoutServers, int serverNumber, int maxQSize, Supplier<Double> restTimes,
             int totalCustomersServed, double totalCustomerWaitTime,
             boolean isAvailable, double nextAvailableAt,
             ImList<Customer> customers) {
-        super(serverNumber, maxQSize, restTimes, totalCustomersServed, totalCustomerWaitTime, isAvailable,
+        super(false, serverNumber, maxQSize, restTimes, totalCustomersServed, totalCustomerWaitTime, isAvailable,
                 nextAvailableAt,
                 customers);
+        this.firstServerNumber = serverNumber;
+        ImList<Server> tempServers = new ImList<Server>();
+        for (int i = 0; i < numOfSelfCheckoutServers; i++) {
+            tempServers = tempServers.add(new Server(true, serverNumber + i, 1, restTimes));
+        }
+        this.servers = tempServers;
+        System.out.println(this.servers.size());
+    }
+
+    int getNumOfSelfCheckoutServers() {
+        return this.servers.size();
     }
 
     boolean isAvailableAt(double eventTime) {
-        return this.isAvailable() && this.getNextAvailableAt() <= eventTime;
+        for (Server server : this.servers) {
+            if (server.isAvailableAt(eventTime)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    double getNextAvailableAt() {
+        double earliestAvailableAt = this.servers.get(0).getNextAvailableAt();
+        for (Server server : this.servers) {
+            System.out.println(server.nextAvailableAt());
+            earliestAvailableAt = Math.min(server.getNextAvailableAt(), earliestAvailableAt);
+        }
+        return earliestAvailableAt;
     }
 
     boolean hasSpaceInQueueAt(double eventTime) {
@@ -50,66 +93,72 @@ class SelfCheckoutServer extends AbstractServer {
         }
     }
 
-    SelfCheckoutServer startServing(Customer customer, double serviceTime,
-            boolean serveFromQueue, double eventTime) {
-        double startServingTime;
-        double currentCustomerWaitTime = eventTime - customer.getArrivalTime();
-        double newTotalCustomerWaitTime = this.getTotalCustomerWaitTime() + currentCustomerWaitTime;
-        if (serveFromQueue) {
-            startServingTime = this.getNextAvailableAt();
-        } else {
-            startServingTime = customer.getArrivalTime();
+    Server getNextAvailableSelfCheckoutServer() {
+        Server earliestAvailableServer = this.servers.get(0);
+        for (Server currentServer : this.servers) {
+            if (currentServer.getNextAvailableAt() < earliestAvailableServer.getNextAvailableAt()) {
+                earliestAvailableServer = currentServer;
+            }
         }
-        ImList<Customer> customers = this.getCustomers();
-        if (!serveFromQueue) {
-            customers = this.getCustomers().add(customer);
-        }
-        if (this.getTotalCustomersServed() == 0) {
-            return new SelfCheckoutServer(this.getServerNumber(), this.getMaxQSize(), this.getRestTimes(),
-                    this.getTotalCustomersServed(), newTotalCustomerWaitTime,
-                    false, customer.getArrivalTime() + serviceTime, customers);
-        }
+        return earliestAvailableServer;
+    }
 
-        return new SelfCheckoutServer(this.getServerNumber(), this.getMaxQSize(), this.getRestTimes(),
-                this.getTotalCustomersServed(), newTotalCustomerWaitTime,
-                false, startServingTime + serviceTime, customers);
+    ImList<Server> updateServer(Server server) {
+        return this.servers.set(server.getServerNumber() - this.firstServerNumber, server);
+    }
+
+    SelfCheckoutServer startServing(Customer customer, int serverNumber, double serviceTime,
+            boolean serveFromQueue, double eventTime) {
+        Server newServer = this.servers.get(serverNumber - 1).startServing(customer, serverNumber, serviceTime,
+                serveFromQueue, eventTime);
+        ImList<Server> newServers = updateServer(newServer);
+
+        return new SelfCheckoutServer(this.getNumOfSelfCheckoutServers(), this.getServerNumber(), this.getMaxQSize(),
+                this.getRestTimes(),
+                this.getTotalCustomersServed(), this.getTotalCustomerWaitTime(),
+                false, serviceTime, this.getCustomers(), newServers);
     }
 
     SelfCheckoutServer addCustomerToQueue(Customer customer) {
         ImList<Customer> customers = this.getCustomers().add(customer);
-        return new SelfCheckoutServer(this.getServerNumber(), this.getMaxQSize(), this.getRestTimes(),
+        return new SelfCheckoutServer(this.getNumOfSelfCheckoutServers(), this.getServerNumber(), this.getMaxQSize(),
+                this.getRestTimes(),
                 this.getTotalCustomersServed(), this.getTotalCustomerWaitTime(),
-                this.isAvailable(), this.getNextAvailableAt(), customers);
+                this.isAvailable(), this.getNextAvailableAt(), customers, this.servers);
     }
 
     Pair<AbstractServer, Double> finishServing() {
-        double restTime = this.getRestTimes().get();
-        double newNextAvailableAt = restTime + this.getNextAvailableAt();
-
         return new Pair<AbstractServer, Double>(
-                new SelfCheckoutServer(this.getServerNumber(), this.getMaxQSize(), this.getRestTimes(),
-                        this.getTotalCustomersServed(), this.getTotalCustomerWaitTime(),
-                        false, newNextAvailableAt, this.getCustomers()),
-                restTime);
+                this,
+                0.0);
     }
 
     Customer getNextCustomerInQueue() {
         return this.getCustomers().get(0);
     }
 
-    SelfCheckoutServer returnFromRest() {
-        ImList<Customer> newCustomers = this.getCustomers().remove(0);
-        int newTotalCustomersServed = this.getTotalCustomersServed() + 1;
-
-        return new SelfCheckoutServer(this.getServerNumber(), this.getMaxQSize(), this.getRestTimes(),
-                newTotalCustomersServed,
+    SelfCheckoutServer returnFromRest(int serverNumber) {
+        Server newServer = this.servers.get(serverNumber - 1).returnFromRest(serverNumber);
+        ImList<Server> newServers = this.updateServer(newServer);
+        return new SelfCheckoutServer(this.getNumOfSelfCheckoutServers(), this.getServerNumber(), this.getMaxQSize(),
+                this.getRestTimes(),
+                this.getTotalCustomersServed(),
                 this.getTotalCustomerWaitTime(), true,
-                this.getNextAvailableAt(), newCustomers);
+                this.getNextAvailableAt(), this.getCustomers(), newServers);
+    }
 
+    @Override
+    AbstractServer getAvailableServer() {
+        return this.getNextAvailableSelfCheckoutServer();
+    }
+
+    @Override
+    String getServerName(int serverNumber) {
+        return String.format("self-check %s", serverNumber);
     }
 
     @Override
     public String toString() {
-        return String.format("%d: %s", this.getServerNumber(), this.getCustomers().toString());
+        return String.format("%d: self checkout server %s", this.getServerNumber(), this.getCustomers().toString());
     }
 }

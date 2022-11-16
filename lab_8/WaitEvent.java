@@ -3,10 +3,10 @@ import java.util.function.Supplier;
 class WaitEvent extends AssignedEvent {
     private final Supplier<Double> serviceTimeSupplier;
 
-    WaitEvent(Customer customer, int serverNumber, double eventTime,
+    WaitEvent(Customer customer, int serverNumber, String serverName, double eventTime,
             Supplier<Double> serviceTimeSupplier,
             boolean serveFromQueue) {
-        super(customer, serverNumber, false, MID_PRIORITY, eventTime);
+        super(customer, serverNumber, serverName, false, MID_PRIORITY, eventTime);
         this.serviceTimeSupplier = serviceTimeSupplier;
     }
 
@@ -22,7 +22,7 @@ class WaitEvent extends AssignedEvent {
         // System.out.println("The customer's arriaval time is " +
         // this.customer.getArrivalTime());
         // System.out.println("The service time is " + serviceTime);
-        ServeEvent serveEvent = new ServeEvent(this.customer, this.serverNumber,
+        ServeEvent serveEvent = new ServeEvent(this.customer, this.serverNumber, this.getServerName(),
                 serviceTime,
                 serviceTimeSupplier, true, false);
 
@@ -31,8 +31,8 @@ class WaitEvent extends AssignedEvent {
 
     @Override
     public String toString() {
-        return String.format("%.3f %d waits at %d", this.eventTime,
+        return String.format("%.3f %d waits at %s", this.eventTime,
                 this.customer.getCustomerNumber(),
-                this.serverNumber);
+                this.getServerName());
     }
 }

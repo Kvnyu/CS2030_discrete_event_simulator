@@ -4,10 +4,10 @@ class ServeEvent extends AssignedEvent {
     private final Supplier<Double> serviceTimeSupplier;
     private final Boolean serveFromQueue;
 
-    ServeEvent(Customer customer, int serverNumber, double eventTime,
+    ServeEvent(Customer customer, int serverNumber, String serverName, double eventTime,
             Supplier<Double> serviceTimeSupplier,
             boolean serveFromQueue, boolean readyToExecute) {
-        super(customer, serverNumber, false, HIGH_PRIORITY, eventTime, readyToExecute);
+        super(customer, serverNumber, serverName, false, HIGH_PRIORITY, eventTime, readyToExecute);
         // System.out.println(eventTime);
         this.serveFromQueue = serveFromQueue;
         this.serviceTimeSupplier = serviceTimeSupplier;
@@ -23,23 +23,23 @@ class ServeEvent extends AssignedEvent {
         if (this.isReadyToExecute()) {
             // System.out.println(1);
             double serviceTime = serviceTimeSupplier.get();
-            server = server.startServing(this.getCustomer(),
+            server = server.startServing(this.getCustomer(), this.serverNumber,
                     serviceTime, this.serveFromQueue, this.getEventTime());
             newServerBalancer = serverBalancer.updateServer(server);
             event = new DoneEvent(this.getCustomer(),
-                    this.getServerNumber(), this.serviceTimeSupplier,
+                    this.getServerNumber(), this.getServerName(), this.serviceTimeSupplier,
                     server.getNextAvailableAt());
         } else if (server.isAvailableAt(this.getEventTime())) {
             // System.out.println(2);
             double servingTime = Math.max(customer.getArrivalTime(), server.getNextAvailableAt());
             event = new ServeEvent(this.getCustomer(),
-                    this.getServerNumber(), servingTime,
+                    this.getServerNumber(), this.getServerName(), servingTime,
                     this.serviceTimeSupplier, this.serveFromQueue, true);
         } else {
             // Otherwise, return a new ServeEvent with event time as the availableServer's
             // next available time
             // System.out.println(3);
-            event = new ServeEvent(this.customer, this.serverNumber, server.getNextAvailableAt(),
+            event = new ServeEvent(this.customer, this.serverNumber, this.getServerName(), server.getNextAvailableAt(),
                     this.serviceTimeSupplier, this.serveFromQueue, false);
 
         }
@@ -51,6 +51,6 @@ class ServeEvent extends AssignedEvent {
         return String.format("%s %s serves by %s",
                 this.getFormattedEventTime(),
                 this.getCustomer(),
-                this.getServerNumber());
+                this.getServerName());
     }
 }
