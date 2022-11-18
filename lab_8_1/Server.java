@@ -221,8 +221,12 @@ class Server {
 
     @Override
     public String toString() {
+        // return this.isSC
+        // ? String.format("layered self-check %d %s", this.serverNumber - 2,
+        // this.getCustomers().toString())
+        // : String.format("regular %d", this.serverNumber);
         return this.isSC
-                ? String.format("layered self-check %d %s", this.serverNumber - 2, this.getCustomers().toString())
-                : String.format("regular %d", this.serverNumber);
+                ? String.format("self-check %d", this.serverNumber - 1)
+                : String.format("%d", this.serverNumber);
     }
 }

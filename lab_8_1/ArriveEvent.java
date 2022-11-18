@@ -19,7 +19,7 @@ class ArriveEvent extends Event {
             // Get server
             Server availableServer = serverBalancer.getAvailableServerAt(this.getEventTime());
             // Create new serveEvent with server and customer
-            ServeEvent serveEvent = new ServeEvent(this.getCustomer(),
+            ServeEvent serveEvent = new ServeEvent(availableServer.toString(), this.getCustomer(),
                     availableServer.getServerNumber(),
                     this.getCustomer().getArrivalTime(), this.serviceTimeSupplier,
                     false, false);
@@ -31,7 +31,7 @@ class ArriveEvent extends Event {
 
             // System.out.println(String.format("serverwith space in queue %s",
             // serverWithSpaceInQueue.toString()));
-            WaitEvent waitEvent = new WaitEvent(this.customer,
+            WaitEvent waitEvent = new WaitEvent(serverWithSpaceInQueue.toString(), this.customer,
                     serverWithSpaceInQueue.getServerNumber(), this.eventTime,
                     this.serviceTimeSupplier,
                     false);

@@ -1,6 +1,6 @@
 class ServerRestEvent extends AssignedEvent {
-    ServerRestEvent(Customer customer, int serverNumber, double eventTime) {
-        super(customer, serverNumber, false, HIGH_PRIORITY, eventTime, false);
+    ServerRestEvent(String serverName, Customer customer, int serverNumber, double eventTime) {
+        super(serverName, customer, serverNumber, false, HIGH_PRIORITY, eventTime, false);
     }
 
     @Override

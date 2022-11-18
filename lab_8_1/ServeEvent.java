@@ -4,10 +4,10 @@ class ServeEvent extends AssignedEvent {
     private final Supplier<Double> serviceTimeSupplier;
     private final Boolean serveFromQueue;
 
-    ServeEvent(Customer customer, int serverNumber, double eventTime,
+    ServeEvent(String serverName, Customer customer, int serverNumber, double eventTime,
             Supplier<Double> serviceTimeSupplier,
             boolean serveFromQueue, boolean readyToExecute) {
-        super(customer, serverNumber, false, HIGH_PRIORITY, eventTime, readyToExecute);
+        super(serverName, customer, serverNumber, false, HIGH_PRIORITY, eventTime, readyToExecute);
         // System.out.println(eventTime);
         this.serveFromQueue = serveFromQueue;
         this.serviceTimeSupplier = serviceTimeSupplier;
@@ -27,14 +27,14 @@ class ServeEvent extends AssignedEvent {
                 server = server.startServing(this.getCustomer(),
                         serviceTime, false, this.getEventTime());
                 newServerBalancer = newServerBalancer.updateServer(server);
-                event = new DoneEvent(this.getCustomer(),
+                event = new DoneEvent(server.toString(), this.getCustomer(),
                         this.getServerNumber(), this.serviceTimeSupplier,
                         server.getNextAvailableAt());
             } else {
                 server = server.startServing(this.getCustomer(),
                         serviceTime, this.serveFromQueue, this.getEventTime());
                 newServerBalancer = serverBalancer.updateServer(server);
-                event = new DoneEvent(this.getCustomer(),
+                event = new DoneEvent(server.toString(), this.getCustomer(),
                         this.getServerNumber(), this.serviceTimeSupplier,
                         server.getNextAvailableAt());
             }
@@ -44,7 +44,7 @@ class ServeEvent extends AssignedEvent {
             server = server.getIfAvailable(this.getEventTime());
             // Need to remove first customer from queue in ScServer and add to queue in
             // Server
-            event = new ServeEvent(this.getCustomer(),
+            event = new ServeEvent(server.toString(), this.getCustomer(),
                     server.getServerNumber(), servingTime,
                     this.serviceTimeSupplier, this.serveFromQueue, true);
         } else {
@@ -53,7 +53,7 @@ class ServeEvent extends AssignedEvent {
             // System.out.println(3);
             // System.out.println(server);
             // System.out.println(server.getNextAvailableAt());
-            event = new ServeEvent(this.customer, this.serverNumber, server.getNextAvailableAt(),
+            event = new ServeEvent(server.toString(), this.customer, this.serverNumber, server.getNextAvailableAt(),
                     this.serviceTimeSupplier, this.serveFromQueue, false);
 
         }
@@ -65,6 +65,6 @@ class ServeEvent extends AssignedEvent {
         return String.format("%s %s serves by %s",
                 this.getFormattedEventTime(),
                 this.getCustomer(),
-                this.getServerNumber());
+                this.getServerName());
     }
 }

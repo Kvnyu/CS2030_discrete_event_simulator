@@ -1,20 +1,23 @@
 abstract class AssignedEvent extends Event {
     protected final int serverNumber;
+    protected final String serverName;
 
-    AssignedEvent(Customer customer, int serverNumber,
+    AssignedEvent(String serverName, Customer customer, int serverNumber,
             boolean isTerminalEvent, int priority) {
-        this(customer, serverNumber, isTerminalEvent, priority, 0.0);
+        this(serverName, customer, serverNumber, isTerminalEvent, priority, 0.0);
     }
 
-    AssignedEvent(Customer customer, int serverNumber,
+    AssignedEvent(String serverName, Customer customer, int serverNumber,
             boolean isTerminalEvent, int priority, double eventTime) {
         super(customer, isTerminalEvent, priority, eventTime);
+        this.serverName = serverName;
         this.serverNumber = serverNumber;
     }
 
-    AssignedEvent(Customer customer, int serverNumber,
+    AssignedEvent(String serverName, Customer customer, int serverNumber,
             boolean isTerminalEvent, int priority, double eventTime, boolean readyToExecute) {
         super(customer, isTerminalEvent, priority, eventTime, readyToExecute);
+        this.serverName = serverName;
         this.serverNumber = serverNumber;
     }
 
@@ -24,5 +27,9 @@ abstract class AssignedEvent extends Event {
 
     protected int getServerNumber() {
         return this.serverNumber;
+    }
+
+    protected String getServerName() {
+        return this.serverName;
     }
 }
