@@ -28,6 +28,9 @@ class ArriveEvent extends Event {
             // Create new serveEvent with server and customer
             Server serverWithSpaceInQueue = serverBalancer
                     .getServerWithSpaceInQueueAt(this.getEventTime());
+
+            // System.out.println(String.format("serverwith space in queue %s",
+            // serverWithSpaceInQueue.toString()));
             WaitEvent waitEvent = new WaitEvent(this.customer,
                     serverWithSpaceInQueue.getServerNumber(), this.eventTime,
                     this.serviceTimeSupplier,

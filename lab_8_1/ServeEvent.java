@@ -21,16 +21,29 @@ class ServeEvent extends AssignedEvent {
         if (this.isReadyToExecute()) {
             // System.out.println(1);
             double serviceTime = serviceTimeSupplier.get();
-            server = server.startServing(this.getCustomer(),
-                    serviceTime, this.serveFromQueue, this.getEventTime());
-            newServerBalancer = serverBalancer.updateServer(server);
-            event = new DoneEvent(this.getCustomer(),
-                    this.getServerNumber(), this.serviceTimeSupplier,
-                    server.getNextAvailableAt());
+            // System.out.println(String.format("server %s", server));
+            if (server.getIsSc() && this.serveFromQueue) {
+                newServerBalancer = serverBalancer.popScQueue();
+                server = server.startServing(this.getCustomer(),
+                        serviceTime, false, this.getEventTime());
+                newServerBalancer = newServerBalancer.updateServer(server);
+                event = new DoneEvent(this.getCustomer(),
+                        this.getServerNumber(), this.serviceTimeSupplier,
+                        server.getNextAvailableAt());
+            } else {
+                server = server.startServing(this.getCustomer(),
+                        serviceTime, this.serveFromQueue, this.getEventTime());
+                newServerBalancer = serverBalancer.updateServer(server);
+                event = new DoneEvent(this.getCustomer(),
+                        this.getServerNumber(), this.serviceTimeSupplier,
+                        server.getNextAvailableAt());
+            }
         } else if (server.isAvailableAt(this.getEventTime())) {
             // System.out.println(2);
             double servingTime = Math.max(customer.getArrivalTime(), server.getNextAvailableAt());
             server = server.getIfAvailable(this.getEventTime());
+            // Need to remove first customer from queue in ScServer and add to queue in
+            // Server
             event = new ServeEvent(this.getCustomer(),
                     server.getServerNumber(), servingTime,
                     this.serviceTimeSupplier, this.serveFromQueue, true);
@@ -38,6 +51,8 @@ class ServeEvent extends AssignedEvent {
             // Otherwise, return a new ServeEvent with event time as the availableServer's
             // next available time
             // System.out.println(3);
+            // System.out.println(server);
+            // System.out.println(server.getNextAvailableAt());
             event = new ServeEvent(this.customer, this.serverNumber, server.getNextAvailableAt(),
                     this.serviceTimeSupplier, this.serveFromQueue, false);
 

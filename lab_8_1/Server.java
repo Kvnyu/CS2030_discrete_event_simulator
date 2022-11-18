@@ -118,6 +118,10 @@ class Server {
                 false, startServingTime + serviceTime, customers, this.isSC);
     }
 
+    Server popScQueue() {
+        return this;
+    }
+
     Server addCustomerToQueue(Customer customer) {
         ImList<Customer> customers = this.customers.add(customer);
         // System.out.println(customers);
@@ -134,15 +138,19 @@ class Server {
         // double newTotalCustomerWaitTime = this.totalCustomerWaitTime
         // + (this.nextAvailableAt - finishedCustomer.getArrivalTime());
         // System.out.println(newCustomers);
-        double restTime = this.restTimes.get();
-        double newNextAvailableAt = restTime + this.nextAvailableAt;
-        // System.out.println(
-        // "Server will be resting for " + restTime + " and next available at " +
-        // newNextAvailableAt);
+        if (!this.isSC) {
+            double restTime = this.restTimes.get();
+            double newNextAvailableAt = restTime + this.nextAvailableAt;
+            // System.out.println(
+            // "Server will be resting for " + restTime + " and next available at " +
+            // newNextAvailableAt);
 
-        return new Pair<Server, Double>(new Server(this.serverNumber, this.maxQSize, this.restTimes,
-                this.totalCustomersServed, this.totalCustomerWaitTime,
-                false, newNextAvailableAt, this.customers, this.isSC), restTime);
+            return new Pair<Server, Double>(new Server(this.serverNumber, this.maxQSize, this.restTimes,
+                    this.totalCustomersServed, this.totalCustomerWaitTime,
+                    false, newNextAvailableAt, this.customers, this.isSC), restTime);
+
+        }
+        return new Pair<Server, Double>(this, 0.0);
     }
 
     boolean hasCustomersInQueue() {
@@ -213,7 +221,8 @@ class Server {
 
     @Override
     public String toString() {
-        return this.isSC ? String.format("self-check %d", this.serverNumber - 1)
-                : String.format("%d", this.serverNumber);
+        return this.isSC
+                ? String.format("layered self-check %d %s", this.serverNumber - 2, this.getCustomers().toString())
+                : String.format("regular %d", this.serverNumber);
     }
 }

@@ -33,14 +33,32 @@
 10.484 7 done serving by 1
 10.484 10 serves by 1
 11.205 13 arrives
-11.205 13 waits at 1
+11.205 13 serves by 4
+11.574 13 done serving by 4
 11.636 8 done serving by 3
 12.429 14 arrives
 12.429 14 serves by 3
-12.798 14 done serving by 3
+12.589 14 done serving by 3
 13.109 15 arrives
-13.109 15 waits at 2
-13.109 15 serves by 2
-13.270 15 done serving by 2
+13.109 15 serves by 3
 13.974 10 done serving by 1
-13.974 11 serves by 1
+14.823 11 serves by 1
+15.264 16 arrives
+15.264 16 serves by 4
+15.524 17 arrives
+15.524 17 waits at 1
+15.718 11 done serving by 1
+15.718 17 serves by 1
+15.725 17 done serving by 1
+15.940 18 arrives
+15.940 18 serves by 1
+15.978 15 done serving by 3
+16.307 16 done serving by 4
+16.516 18 done serving by 1
+17.793 19 arrives
+17.793 19 serves by 3
+18.535 19 done serving by 3
+18.765 20 arrives
+18.765 20 serves by 3
+21.773 20 done serving by 3
+[0.356 20 0]

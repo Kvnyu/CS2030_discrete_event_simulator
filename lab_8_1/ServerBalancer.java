@@ -34,6 +34,12 @@ class ServerBalancer {
         this.qmax = qmax;
         this.restTimes = restTimes;
         this.servers = servers;
+        // System.out.println(this.servers);
+    }
+
+    ServerBalancer popScQueue() {
+        Server newScServer = this.servers.get(this.numOfServers).popScQueue();
+        return this.updateServer(newScServer);
     }
 
     boolean isThereAServerAvailableAt(double eventTime) {
@@ -76,13 +82,19 @@ class ServerBalancer {
 
     Server getServer(int serverNumber) {
         // servers ScServer [servers]
+        // ScServer server server
+        // 1 2 3
+        // numOfServers = 0
         if (serverNumber > this.numOfServers + 1) {
             return this.servers.get(this.numOfServers).get(serverNumber);
         }
+        // System.out.println(String.format("%s", this.servers.toString()));
         return this.servers.get(serverNumber - 1);
     }
 
     ServerBalancer updateServer(Server server) {
+        // System.out.println(String.format("servernumber: %d",
+        // server.getServerNumber()));
         if (server.getServerNumber() > this.numOfServers + 1) {
             Server newServer = this.servers.get(this.numOfServers).updateServer(server);
             ImList<Server> newServers = this.servers.set(this.numOfServers, newServer);
@@ -110,5 +122,10 @@ class ServerBalancer {
             totalCustomersServed += server.getTotalCustomersServed();
         }
         return totalCustomersServed;
+    }
+
+    @Override
+    public String toString() {
+        return this.servers.toString();
     }
 }

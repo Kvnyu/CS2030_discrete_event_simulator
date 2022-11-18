@@ -54,6 +54,33 @@ class ScServer extends Server {
     }
 
     @Override
+    Server addCustomerToQueue(Customer customer) {
+        ImList<Customer> customers = this.getCustomers().add(customer);
+        // System.out.println(customers);
+        return new ScServer(this.scServers.size(), this.getServerNumber(), this.getMaxQSize(), this.getRestTimes(),
+                this.getTotalCustomersServed(), this.getTotalCustomerWaitTime(), this.isAvailable(),
+                this.getNextAvailableAt(), customers, this.scServers);
+    }
+
+    @Override
+    int getTotalCustomersServed() {
+        int total = 0;
+        for (Server server : this.scServers) {
+            total += server.getTotalCustomersServed();
+        }
+        return total;
+    }
+
+    @Override
+    double getTotalCustomerWaitTime() {
+        double total = 0;
+        for (Server server : this.scServers) {
+            total += server.getTotalCustomerWaitTime();
+        }
+        return total;
+    }
+
+    @Override
     boolean isAvailableAt(double eventTime) {
         for (Server server : this.scServers) {
             if (server.isAvailableAt(eventTime)) {
@@ -82,9 +109,18 @@ class ScServer extends Server {
         return returnServer;
     }
 
+    Server popScQueue() {
+        ImList<Customer> newCustomers = this.getCustomers().remove(0);
+        return new ScServer(this.scServers.size(), this.getServerNumber(), this.getMaxQSize(), this.getRestTimes(),
+                this.getTotalCustomersServed(), this.getTotalCustomerWaitTime(), this.isAvailable(),
+                this.getNextAvailableAt(), newCustomers, this.scServers);
+    }
+
     @Override
     Server get(int serverNumber) {
-        return this.scServers.get(serverNumber - 3);
+        // minus 1 to convert to index
+        // minus 2 since we shifted all ScServers forwards by 1
+        return this.scServers.get(serverNumber - this.getServerNumber() - 1);
     }
 
     @Override
@@ -104,7 +140,18 @@ class ScServer extends Server {
     }
 
     @Override
+    double getNextAvailableAt() {
+        double lowestNextAvailableAt = this.scServers.get(0).getNextAvailableAt();
+        for (Server server : this.scServers) {
+            lowestNextAvailableAt = Math.min(lowestNextAvailableAt, server.getNextAvailableAt());
+        }
+        return lowestNextAvailableAt;
+
+    }
+
+    @Override
     public String toString() {
-        return String.format("self-check %d", this.getServerNumber());
+        return String.format("outerScServer %s | %s | %s", this.getServerNumber(), this.getCustomers(),
+                this.scServers.toString());
     }
 }

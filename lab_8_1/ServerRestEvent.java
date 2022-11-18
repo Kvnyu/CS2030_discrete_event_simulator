@@ -6,6 +6,7 @@ class ServerRestEvent extends AssignedEvent {
     @Override
     Pair<Event, ServerBalancer> getNextEvent(ServerBalancer serverBalancer) {
         Server server = serverBalancer.getServer(serverNumber);
+        // System.out.println(server.getCustomers());
         server = server.returnFromRest();
         Event event = new TerminalEvent(this.customer);
         serverBalancer = serverBalancer.updateServer(server);

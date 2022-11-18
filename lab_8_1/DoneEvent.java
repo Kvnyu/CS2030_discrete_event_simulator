@@ -12,11 +12,15 @@ class DoneEvent extends AssignedEvent {
     @Override
     Pair<Event, ServerBalancer> getNextEvent(ServerBalancer serverBalancer) {
         Server server = serverBalancer.getServer(serverNumber);
+        // System.out.println(String.format("customers: %s",
+        // server.getCustomers().toString()));
         Pair<Server, Double> serverWithRestTime = server.finishServing();
         server = serverWithRestTime.first();
         double restTime = serverWithRestTime.second();
         Event event = new ServerRestEvent(this.customer, this.serverNumber,
                 this.eventTime + restTime);
+        // System.out.println(String.format("customers: %s",
+        // server.getCustomers().toString()));
         serverBalancer = serverBalancer.updateServer(server);
         return new Pair<Event, ServerBalancer>(event, serverBalancer);
     }
