@@ -146,9 +146,11 @@ class Server {
             // "Server will be resting for " + restTime + " and next available at " +
             // newNextAvailableAt);
 
-            return new Pair<Server, Double>(new Server(this.serverNumber, this.maxQSize, this.restTimes,
+            return new Pair<Server, Double>(new Server(this.serverNumber,
+                    this.maxQSize, this.restTimes,
                     this.totalCustomersServed, this.totalCustomerWaitTime,
-                    false, newNextAvailableAt, this.customers, this.isSC), restTime);
+                    false, newNextAvailableAt, this.customers,
+                    this.isSC), restTime);
 
         }
         return new Pair<Server, Double>(this, 0.0);
@@ -189,7 +191,9 @@ class Server {
         // int totalCustomersServed, double totalCustomerWaitTime,
         // boolean isAvailable, double nextAvailableAt,
         // ImList<Customer> customers, boolean isSC) {
-        return new Server(serverNumber, maxQSize, restTimes, 0, 0.0, true, 0.0, new ImList<Customer>(), isSC);
+        return new Server(serverNumber, maxQSize, restTimes,
+                0, 0.0, true,
+                0.0, new ImList<Customer>(), isSC);
     }
 
     Server getIfAvailable(double eventTime) {

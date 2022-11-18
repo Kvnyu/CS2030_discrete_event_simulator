@@ -53,7 +53,8 @@ class ServeEvent extends AssignedEvent {
             // System.out.println(3);
             // System.out.println(server);
             // System.out.println(server.getNextAvailableAt());
-            event = new ServeEvent(server.toString(), this.customer, this.serverNumber, server.getNextAvailableAt(),
+            event = new ServeEvent(server.toString(), this.customer,
+                    this.serverNumber, server.getNextAvailableAt(),
                     this.serviceTimeSupplier, this.serveFromQueue, false);
 
         }

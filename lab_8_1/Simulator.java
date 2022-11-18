@@ -7,7 +7,8 @@ class Simulator {
     private final ImList<Pair<Double, Supplier<Double>>> inputTimes;
     private final Supplier<Double> restTimes;
 
-    Simulator(int numOfServers, int numOfSelfCheckouts, int qmax, ImList<Pair<Double, Supplier<Double>>> inputTimes,
+    Simulator(int numOfServers, int numOfSelfCheckouts, int qmax,
+            ImList<Pair<Double, Supplier<Double>>> inputTimes,
             Supplier<Double> restTimes) {
         this.numOfSelfCheckouts = numOfSelfCheckouts;
         this.numOfServers = numOfServers;
@@ -20,7 +21,8 @@ class Simulator {
         int customerNumber = 1;
 
         PQ<Event> queue = new PQ<Event>(new EventComparator());
-        ServerBalancer serverBalancer = new ServerBalancer(this.numOfServers, this.numOfSelfCheckouts,
+        ServerBalancer serverBalancer = new ServerBalancer(this.numOfServers,
+                this.numOfSelfCheckouts,
                 this.qmax, this.restTimes);
 
         for (Pair<Double, Supplier<Double>> customerPair : this.inputTimes) {

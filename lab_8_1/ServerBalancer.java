@@ -7,7 +7,8 @@ class ServerBalancer {
     private final ImList<Server> servers;
     private final Supplier<Double> restTimes;
 
-    ServerBalancer(int numOfServers, int numOfSelfCheckoutServers, int qmax, Supplier<Double> restTimes) {
+    ServerBalancer(int numOfServers, int numOfSelfCheckoutServers,
+            int qmax, Supplier<Double> restTimes) {
         this.numOfServers = numOfServers;
         this.numOfSelfCheckoutServers = numOfSelfCheckoutServers;
         this.qmax = qmax;
@@ -21,13 +22,15 @@ class ServerBalancer {
 
         if (numOfSelfCheckoutServers > 0) {
             servers = servers
-                    .add(new ScServer(numOfSelfCheckoutServers, numOfServers + 1, this.qmax, this.restTimes));
+                    .add(new ScServer(numOfSelfCheckoutServers,
+                            numOfServers + 1, this.qmax, this.restTimes));
         }
 
         this.servers = servers;
     }
 
-    ServerBalancer(int numOfServers, int numOfSelfCheckoutServers, int qmax, Supplier<Double> restTimes,
+    ServerBalancer(int numOfServers, int numOfSelfCheckoutServers, int qmax,
+            Supplier<Double> restTimes,
             ImList<Server> servers) {
         this.numOfServers = numOfServers;
         this.numOfSelfCheckoutServers = numOfSelfCheckoutServers;
@@ -105,7 +108,8 @@ class ServerBalancer {
     }
 
     ServerBalancer updateListOfServers(ImList<Server> servers) {
-        return new ServerBalancer(this.numOfServers, this.numOfSelfCheckoutServers, this.qmax, this.restTimes, servers);
+        return new ServerBalancer(this.numOfServers, this.numOfSelfCheckoutServers,
+                this.qmax, this.restTimes, servers);
     }
 
     double getTotalCustomerWaitTime() {
