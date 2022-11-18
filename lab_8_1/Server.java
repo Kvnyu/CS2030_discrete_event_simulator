@@ -94,11 +94,12 @@ class Server {
         // customer.getArrivalTime() + " " + eventTime);
         // System.out.println("server wait time: " + this.totalCustomerWaitTime);
         // System.out.println("new server wait time: " + newTotalCustomerWaitTime);
-        if (serveFromQueue) {
-            startServingTime = this.getNextAvailableAt();
-        } else {
-            startServingTime = customer.getArrivalTime();
-        }
+        // if (serveFromQueue) {
+        // startServingTime = this.getNextAvailableAt();
+        // } else {
+        // startServingTime = customer.getArrivalTime();
+        // }
+        startServingTime = eventTime;
         // System.out.println("Server " + this.serverNumber + " started serving at " +
         // startServingTime);
         ImList<Customer> customers = this.customers;
