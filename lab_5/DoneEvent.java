@@ -14,15 +14,7 @@ class DoneEvent extends AssignedEvent {
         Server server = serverBalancer.getServer(serverNumber);
         server = server.finishServing();
         Event event = new TerminalEvent(this.customer);
-        // if (server.hasCustomersInQueue()) {
-        // Customer customer = server.getNextCustomerInQueue();
-        // event = new ServeEvent(customer, server.getServerNumber(),
-        // this.getEventTime(), this.serviceTimeSupplier, true);
-        // }
         serverBalancer = serverBalancer.updateServer(server);
-        // System.out.println(String.format("customer %d finished, created new event
-        // with priority %d",
-        // this.getCustomer().getCustomerNumber(), this.getPriority()));
         return new Pair<Event, ServerBalancer>(event, serverBalancer);
     }
 

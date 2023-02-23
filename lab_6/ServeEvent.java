@@ -8,7 +8,6 @@ class ServeEvent extends AssignedEvent {
             Supplier<Double> serviceTimeSupplier,
             boolean serveFromQueue, boolean readyToExecute) {
         super(customer, serverNumber, false, HIGH_PRIORITY, eventTime, readyToExecute);
-        // System.out.println(eventTime);
         this.serveFromQueue = serveFromQueue;
         this.serviceTimeSupplier = serviceTimeSupplier;
     }
@@ -19,7 +18,6 @@ class ServeEvent extends AssignedEvent {
         ServerBalancer newServerBalancer = serverBalancer;
         Event event;
         if (this.isReadyToExecute()) {
-            // System.out.println(1);
             double serviceTime = serviceTimeSupplier.get();
             server = server.startServing(this.getCustomer(),
                     serviceTime, this.serveFromQueue, this.getEventTime());
@@ -28,7 +26,6 @@ class ServeEvent extends AssignedEvent {
                     this.getServerNumber(), this.serviceTimeSupplier,
                     server.getNextAvailableAt());
         } else if (server.isAvailableAt(this.getEventTime())) {
-            // System.out.println(2);
             double servingTime = Math.max(customer.getArrivalTime(), server.getNextAvailableAt());
             event = new ServeEvent(this.getCustomer(),
                     this.getServerNumber(), servingTime,
@@ -36,7 +33,6 @@ class ServeEvent extends AssignedEvent {
         } else {
             // Otherwise, return a new ServeEvent with event time as the availableServer's
             // next available time
-            // System.out.println(3);
             event = new ServeEvent(this.customer, this.serverNumber, server.getNextAvailableAt(),
                     this.serviceTimeSupplier, this.serveFromQueue, false);
 

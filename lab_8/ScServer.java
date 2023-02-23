@@ -63,7 +63,6 @@ class ScServer extends Server {
     @Override
     Server addCustomerToQueue(Customer customer) {
         ImList<Customer> customers = this.getCustomers().add(customer);
-        // System.out.println(customers);
         return new ScServer(this.scServers.size(), this.getServerNumber(),
                 this.getMaxQSize(), this.getRestTimes(),
                 this.getTotalCustomersServed(), this.getTotalCustomerWaitTime(), this.isAvailable(),
@@ -164,15 +163,10 @@ class ScServer extends Server {
     @Override
     public String toString() {
         return String.format("self-check %d", this.getServerNumber());
-        // return String.format("outerScServer %s | %s | %s", this.getServerNumber(),
-        // this.getCustomers(),
-        // this.scServers.toString());
     }
 
     @Override
     boolean hasSpaceInQueueAt(double eventTime) {
-        // System.out.println(String.format("%d %d", this.maxQSize,
-        // this.getQueueSize()));
         if (this.getNextAvailableAt() <= eventTime) {
             return this.getMaxQSize() - this.getQueueSize() - 1 > 0;
         } else {

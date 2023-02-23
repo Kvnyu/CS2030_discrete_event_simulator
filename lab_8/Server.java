@@ -56,14 +56,10 @@ class Server {
     }
 
     boolean isAvailableAt(double eventTime) {
-        // System.out.println(String.format("Server %d next available at %f",
-        // this.serverNumber, this.nextAvailableAt));
         return this.isAvailable && this.nextAvailableAt <= eventTime;
     }
 
     boolean hasSpaceInQueueAt(double eventTime) {
-        // System.out.println(String.format("%d %d", this.maxQSize,
-        // this.getQueueSize()));
         if (this.nextAvailableAt <= eventTime) {
             return this.maxQSize - this.getQueueSize() > 0;
         } else {
@@ -85,23 +81,10 @@ class Server {
 
     Server startServing(Customer customer, double serviceTime,
             boolean serveFromQueue, double eventTime) {
-        // TODO: Update the totalCustomersServed and totalCustomerWaitTime in the
-        // DoneEvent
         double startServingTime;
         double currentCustomerWaitTime = eventTime - customer.getArrivalTime();
         double newTotalCustomerWaitTime = this.totalCustomerWaitTime + currentCustomerWaitTime;
-        // System.out.println("customer " + customer.toString() + " " +
-        // customer.getArrivalTime() + " " + eventTime);
-        // System.out.println("server wait time: " + this.totalCustomerWaitTime);
-        // System.out.println("new server wait time: " + newTotalCustomerWaitTime);
-        // if (serveFromQueue) {
-        // startServingTime = this.getNextAvailableAt();
-        // } else {
-        // startServingTime = customer.getArrivalTime();
-        // }
         startServingTime = eventTime;
-        // System.out.println("Server " + this.serverNumber + " started serving at " +
-        // startServingTime);
         ImList<Customer> customers = this.customers;
         if (!serveFromQueue) {
             customers = this.customers.add(customer);
@@ -112,8 +95,6 @@ class Server {
                     false, customer.getArrivalTime() + serviceTime, customers, this.isSC);
         }
 
-        // System.out.println("Server " + this.serverNumber + " finishes serving at " +
-        // startServingTime + serviceTime);
         return new Server(this.serverNumber, this.maxQSize, this.restTimes,
                 this.totalCustomersServed, newTotalCustomerWaitTime,
                 false, startServingTime + serviceTime, customers, this.isSC);
@@ -125,7 +106,6 @@ class Server {
 
     Server addCustomerToQueue(Customer customer) {
         ImList<Customer> customers = this.customers.add(customer);
-        // System.out.println(customers);
         return new Server(this.serverNumber, this.maxQSize, this.restTimes,
                 this.totalCustomersServed, this.totalCustomerWaitTime,
                 this.isAvailable, this.nextAvailableAt, customers, this.isSC);
@@ -136,15 +116,9 @@ class Server {
     }
 
     Pair<Server, Double> finishServing() {
-        // double newTotalCustomerWaitTime = this.totalCustomerWaitTime
-        // + (this.nextAvailableAt - finishedCustomer.getArrivalTime());
-        // System.out.println(newCustomers);
         if (!this.isSC) {
             double restTime = this.restTimes.get();
             double newNextAvailableAt = restTime + this.nextAvailableAt;
-            // System.out.println(
-            // "Server will be resting for " + restTime + " and next available at " +
-            // newNextAvailableAt);
 
             return new Pair<Server, Double>(new Server(this.serverNumber,
                     this.maxQSize, this.restTimes,
@@ -187,10 +161,6 @@ class Server {
     }
 
     static Server of(int serverNumber, int maxQSize, Supplier<Double> restTimes, boolean isSC) {
-        // Server(int serverNumber, int maxQSize, Supplier<Double> restTimes,
-        // int totalCustomersServed, double totalCustomerWaitTime,
-        // boolean isAvailable, double nextAvailableAt,
-        // ImList<Customer> customers, boolean isSC) {
         return new Server(serverNumber, maxQSize, restTimes,
                 0, 0.0, true,
                 0.0, new ImList<Customer>(), isSC);
@@ -226,10 +196,6 @@ class Server {
 
     @Override
     public String toString() {
-        // return this.isSC
-        // ? String.format("layered self-check %d %s", this.serverNumber - 2,
-        // this.getCustomers().toString())
-        // : String.format("regular %d", this.serverNumber);
         return this.isSC
                 ? String.format("self-check %d", this.serverNumber - 1)
                 : String.format("%d", this.serverNumber);

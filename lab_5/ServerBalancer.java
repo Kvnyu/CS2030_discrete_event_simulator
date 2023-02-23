@@ -20,7 +20,6 @@ class ServerBalancer {
         this.numOfServers = numOfServers;
         this.qmax = qmax;
         this.servers = servers;
-        // System.out.println(this.servers);
     }
 
     boolean isThereAServerAvailable() {
@@ -54,9 +53,6 @@ class ServerBalancer {
     Server getServerWithSpaceInQueue() {
         Server serverWithSpaceInQueue = this.servers.get(0);
         for (Server server : this.servers) {
-            // System.out.print(server.getServerNumber());
-            // System.out.print(" ");
-            // System.out.println(server.getCustomers());
             if (server.hasSpaceInQueue()) {
                 return server;
             }

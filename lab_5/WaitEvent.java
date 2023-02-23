@@ -14,7 +14,6 @@ class WaitEvent extends AssignedEvent {
     @Override
     Pair<Event, ServerBalancer> getNextEvent(ServerBalancer serverBalancer) {
         Server server = serverBalancer.getServer(this.getServerNumber());
-        // System.out.println(server.getCustomers());
         server = server.addCustomerToQueue(this.getCustomer());
         ServerBalancer newServerBalancer = serverBalancer.updateServer(server);
         ServeEvent serveEvent = new ServeEvent(this.customer, this.serverNumber,

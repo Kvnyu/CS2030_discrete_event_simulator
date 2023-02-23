@@ -31,12 +31,9 @@ class Simulator {
         }
 
         while (!queue.isEmpty()) {
-            // System.out.println("new iteration------------------");
             Pair<Event, PQ<Event>> pair = queue.poll();
             Event event = pair.first();
             queue = pair.second();
-
-            // System.out.println(queue);
 
             event.maybePrintEvent();
 

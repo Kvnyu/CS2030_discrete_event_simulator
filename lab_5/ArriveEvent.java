@@ -36,12 +36,6 @@ class ArriveEvent extends Event {
         return new Pair<Event, ServerBalancer>(new LeaveEvent(this.customer), serverBalancer);
     }
 
-    // // TODO: Change this name
-    // String formatDouble(Double number) {
-    // NumberFormat formatter = new DecimalFormat("#0.0");
-    // return formatter.format(number);
-    // }
-
     @Override
     public String toString() {
         return String.format("%s %s arrives", this.getFormattedEventTime(),

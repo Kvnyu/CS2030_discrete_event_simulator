@@ -8,7 +8,6 @@ class ServeEvent extends AssignedEvent {
             Supplier<Double> serviceTimeSupplier,
             boolean serveFromQueue, boolean readyToExecute) {
         super(serverName, customer, serverNumber, false, HIGH_PRIORITY, eventTime, readyToExecute);
-        // System.out.println(eventTime);
         this.serveFromQueue = serveFromQueue;
         this.serviceTimeSupplier = serviceTimeSupplier;
     }
@@ -19,9 +18,7 @@ class ServeEvent extends AssignedEvent {
         ServerBalancer newServerBalancer = serverBalancer;
         Event event;
         if (this.isReadyToExecute()) {
-            // System.out.println(1);
             double serviceTime = serviceTimeSupplier.get();
-            // System.out.println(String.format("server %s", server));
             if (server.getIsSc() && this.serveFromQueue) {
                 newServerBalancer = serverBalancer.popScQueue();
                 server = server.startServing(this.getCustomer(),
@@ -39,7 +36,6 @@ class ServeEvent extends AssignedEvent {
                         server.getNextAvailableAt());
             }
         } else if (server.isAvailableAt(this.getEventTime())) {
-            // System.out.println(2);
             double servingTime = Math.max(customer.getArrivalTime(), server.getNextAvailableAt());
             server = server.getIfAvailable(this.getEventTime());
             // Need to remove first customer from queue in ScServer and add to queue in
@@ -49,10 +45,6 @@ class ServeEvent extends AssignedEvent {
                     this.serviceTimeSupplier, this.serveFromQueue, true);
         } else {
             // Otherwise, return a new ServeEvent with event time as the availableServer's
-            // next available time
-            // System.out.println(3);
-            // System.out.println(server);
-            // System.out.println(server.getNextAvailableAt());
             event = new ServeEvent(server.toString(), this.customer,
                     this.serverNumber, server.getNextAvailableAt(),
                     this.serviceTimeSupplier, this.serveFromQueue, false);

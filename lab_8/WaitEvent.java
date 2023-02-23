@@ -14,10 +14,7 @@ class WaitEvent extends AssignedEvent {
     Pair<Event, ServerBalancer> getNextEvent(ServerBalancer serverBalancer) {
         Server server = serverBalancer.getServer(this.getServerNumber());
         server = server.addCustomerToQueue(this.getCustomer());
-        // System.out.println(String.format("server in waitevent %s",
-        // server.toString()));
         ServerBalancer newServerBalancer = serverBalancer.updateServer(server);
-        // System.out.println(newServerBalancer.toString());
         double serviceTime = Math.max(server.getNextAvailableAt(), this.customer.getArrivalTime());
         ServeEvent serveEvent = new ServeEvent(server.toString(), this.customer, this.serverNumber,
                 serviceTime,

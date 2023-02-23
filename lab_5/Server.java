@@ -46,9 +46,6 @@ class Server {
         this.totalCustomerWaitTime = totalCustomerWaitTime;
         this.isAvailable = isAvailable;
         this.customers = customers;
-        // System.out.println(
-        // String.format("Server number %d and next available at %f", this.serverNumber,
-        // this.nextAvailableAt));
     }
 
     boolean isAvailable() {
@@ -56,8 +53,6 @@ class Server {
     }
 
     boolean hasSpaceInQueue() {
-        // System.out.println(String.format("%d %d", this.maxQSize,
-        // this.getQueueSize()));
         return this.maxQSize - this.getQueueSize() + 1 > 0;
     }
 
@@ -74,15 +69,10 @@ class Server {
     }
 
     Server startServing(Customer customer, double serviceTime, boolean serveFromQueue, double eventTime) {
-        // TODO: Update the totalCustomersServed and totalCustomerWaitTime in the
         // DoneEvent
         double startServingTime;
         double currentCustomerWaitTime = eventTime - customer.getArrivalTime();
         double newTotalCustomerWaitTime = this.totalCustomerWaitTime + currentCustomerWaitTime;
-        // System.out.println("customer " + customer.toString() + " " +
-        // customer.getArrivalTime() + " " + eventTime);
-        // System.out.println("server wait time: " + this.totalCustomerWaitTime);
-        // System.out.println("new server wait time: " + newTotalCustomerWaitTime);
         if (serveFromQueue) {
             startServingTime = this.getNextAvailableAt();
         } else {
@@ -104,7 +94,6 @@ class Server {
 
     Server addCustomerToQueue(Customer customer) {
         ImList<Customer> customers = this.customers.add(customer);
-        // System.out.println(customers);
         return new Server(this.serverNumber, this.maxQSize,
                 this.totalCustomersServed, this.totalCustomerWaitTime,
                 this.isAvailable, this.nextAvailableAt, customers);
@@ -115,12 +104,8 @@ class Server {
     }
 
     Server finishServing() {
-        Customer finishedCustomer = this.customers.get(0);
         ImList<Customer> newCustomers = this.customers.remove(0);
-        // double newTotalCustomerWaitTime = this.totalCustomerWaitTime
-        // + (this.nextAvailableAt - finishedCustomer.getArrivalTime());
         int newTotalCustomersServed = this.totalCustomersServed + 1;
-        // System.out.println(newCustomers);
         return new Server(this.serverNumber, this.maxQSize,
                 newTotalCustomersServed, this.totalCustomerWaitTime,
                 true, this.nextAvailableAt, newCustomers);

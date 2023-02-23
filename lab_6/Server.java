@@ -53,20 +53,13 @@ class Server {
         this.isAvailable = isAvailable;
         this.customers = customers;
         this.restTimes = restTimes;
-        // System.out.println(
-        // String.format("Server number %d and next available at %f", this.serverNumber,
-        // this.nextAvailableAt));
     }
 
     boolean isAvailableAt(double eventTime) {
-        // System.out.println(String.format("Server %d next available at %f",
-        // this.serverNumber, this.nextAvailableAt));
         return this.isAvailable && this.nextAvailableAt <= eventTime;
     }
 
     boolean hasSpaceInQueueAt(double eventTime) {
-        // System.out.println(String.format("%d %d", this.maxQSize,
-        // this.getQueueSize()));
         if (this.nextAvailableAt <= eventTime) {
             return this.maxQSize - this.getQueueSize() > 0;
         } else {
@@ -93,17 +86,11 @@ class Server {
         double startServingTime;
         double currentCustomerWaitTime = eventTime - customer.getArrivalTime();
         double newTotalCustomerWaitTime = this.totalCustomerWaitTime + currentCustomerWaitTime;
-        // System.out.println("customer " + customer.toString() + " " +
-        // customer.getArrivalTime() + " " + eventTime);
-        // System.out.println("server wait time: " + this.totalCustomerWaitTime);
-        // System.out.println("new server wait time: " + newTotalCustomerWaitTime);
         if (serveFromQueue) {
             startServingTime = this.getNextAvailableAt();
         } else {
             startServingTime = customer.getArrivalTime();
         }
-        // System.out.println("Server " + this.serverNumber + " started serving at " +
-        // startServingTime);
         ImList<Customer> customers = this.customers;
         if (!serveFromQueue) {
             customers = this.customers.add(customer);
@@ -114,8 +101,6 @@ class Server {
                     false, customer.getArrivalTime() + serviceTime, customers);
         }
 
-        // System.out.println("Server " + this.serverNumber + " finishes serving at " +
-        // startServingTime + serviceTime);
         return new Server(this.serverNumber, this.maxQSize, this.restTimes,
                 this.totalCustomersServed, newTotalCustomerWaitTime,
                 false, startServingTime + serviceTime, customers);
@@ -123,7 +108,6 @@ class Server {
 
     Server addCustomerToQueue(Customer customer) {
         ImList<Customer> customers = this.customers.add(customer);
-        // System.out.println(customers);
         return new Server(this.serverNumber, this.maxQSize, this.restTimes,
                 this.totalCustomersServed, this.totalCustomerWaitTime,
                 this.isAvailable, this.nextAvailableAt, customers);
@@ -134,15 +118,8 @@ class Server {
     }
 
     Pair<Server, Double> finishServing() {
-        // double newTotalCustomerWaitTime = this.totalCustomerWaitTime
-        // + (this.nextAvailableAt - finishedCustomer.getArrivalTime());
-        // System.out.println(newCustomers);
         double restTime = this.restTimes.get();
         double newNextAvailableAt = restTime + this.nextAvailableAt;
-        // System.out.println(
-        // "Server will be resting for " + restTime + " and next available at " +
-        // newNextAvailableAt);
-
         return new Pair<Server, Double>(new Server(this.serverNumber, this.maxQSize, this.restTimes,
                 this.totalCustomersServed, this.totalCustomerWaitTime,
                 false, newNextAvailableAt, this.customers), restTime);
