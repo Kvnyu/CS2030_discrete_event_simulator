@@ -1,13 +1,13 @@
 class LeaveEvent extends Event {
 
     LeaveEvent(Customer customer) {
-        super(customer, false, HIGH_PRIORITY);
+        super(customer, HIGH_PRIORITY);
     }
 
     @Override
     public String toString() {
         return String.format("%s %s leaves",
-                this.getCustomer().getFormattedArrivalTime(),
+                this.getCustomer().getArrivalTime(),
                 this.getCustomer());
     }
 

@@ -1,17 +1,28 @@
 abstract class AssignedEvent extends Event {
-    private final Server server;
+    protected final int serverNumber;
 
-    AssignedEvent(Customer customer, Server server, boolean isTerminalEvent, int priority) {
-        this(customer, server, isTerminalEvent, priority, true);
+    AssignedEvent(Customer customer, int serverNumber,
+            boolean isTerminalEvent, int priority) {
+        this(customer, serverNumber, isTerminalEvent, priority, 0.0);
     }
 
-    AssignedEvent(Customer customer, Server server, boolean isTerminalEvent, int priority, boolean canOutput) {
-        super(customer, isTerminalEvent, priority, canOutput);
-        this.server = server;
-
+    AssignedEvent(Customer customer, int serverNumber,
+            boolean isTerminalEvent, int priority, double eventTime) {
+        super(customer, isTerminalEvent, priority, eventTime);
+        this.serverNumber = serverNumber;
     }
 
-    protected Server getServer() {
-        return this.server;
+    AssignedEvent(Customer customer, int serverNumber,
+            boolean isTerminalEvent, int priority, double eventTime, boolean readyToExecute) {
+        super(customer, isTerminalEvent, priority, eventTime, readyToExecute);
+        this.serverNumber = serverNumber;
+    }
+
+    protected int getServerIndexNumber() {
+        return this.serverNumber - 1;
+    }
+
+    protected int getServerNumber() {
+        return this.serverNumber;
     }
 }

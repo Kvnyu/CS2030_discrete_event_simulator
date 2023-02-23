@@ -1,14 +1,42 @@
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.util.function.Supplier;
 
 class ServeEvent extends AssignedEvent {
-    private final double eventTime;
-    private final boolean serveFromQueue;
+    private final Supplier<Double> serviceTimeSupplier;
+    private final Boolean serveFromQueue;
 
-    ServeEvent(Customer customer, Server server, double eventTime, boolean serveFromQueue) {
-        super(customer, server, false, HIGH_PRIORITY);
-        this.eventTime = eventTime;
+    ServeEvent(Customer customer, int serverNumber, double eventTime,
+            Supplier<Double> serviceTimeSupplier,
+            boolean serveFromQueue, boolean readyToPrint) {
+        super(customer, serverNumber, false, HIGH_PRIORITY, eventTime, readyToPrint);
         this.serveFromQueue = serveFromQueue;
+        this.serviceTimeSupplier = serviceTimeSupplier;
+    }
+
+    @Override
+    Pair<Event, ServerBalancer> getNextEvent(ServerBalancer serverBalancer) {
+        Server server = serverBalancer.getServer(this.serverNumber);
+        ServerBalancer newServerBalancer = serverBalancer;
+        Event event;
+        if (this.isReadyToExecute()) {
+            double serviceTime = serviceTimeSupplier.get();
+            server = server.startServing(this.getCustomer(),
+                    serviceTime, this.serveFromQueue, this.eventTime);
+            newServerBalancer = serverBalancer.updateServer(server);
+            event = new DoneEvent(this.getCustomer(),
+                    this.getServerNumber(), this.serviceTimeSupplier,
+                    server.getNextAvailableAt());
+        } else if (server.isAvailable()) {
+            event = new ServeEvent(this.getCustomer(),
+                    this.getServerNumber(), this.eventTime,
+                    this.serviceTimeSupplier, this.serveFromQueue, true);
+        } else {
+            // Otherwise, return a new ServeEvent with event time as the availableServer's
+            // next available time
+            event = new ServeEvent(this.customer, this.serverNumber, server.getNextAvailableAt(),
+                    this.serviceTimeSupplier, this.serveFromQueue, false);
+
+        }
+        return new Pair<Event, ServerBalancer>(event, newServerBalancer);
     }
 
     @Override
@@ -16,30 +44,6 @@ class ServeEvent extends AssignedEvent {
         return String.format("%s %s serves by %s",
                 this.getFormattedEventTime(),
                 this.getCustomer(),
-                this.getServer());
-    }
-
-    double getEventTime() {
-        return this.eventTime;
-    }
-
-    String getFormattedEventTime() {
-        NumberFormat formatter = new DecimalFormat("#0.000");
-        return formatter.format(this.eventTime);
-    }
-
-    @Override
-    Pair<Event, ServerBalancer> getNextEvent(ServerBalancer serverBalancer) {
-        ServerBalancer newServerBalancer = serverBalancer;
-        // update server for non serve from queue
-        if (this.serveFromQueue) {
-            newServerBalancer = serverBalancer.decrementServerQueue(this.customer, this.getServer());
-        } else {
-            newServerBalancer = serverBalancer.finishServingCustomer(this.customer, this.getServer());
-        }
-        return new Pair<Event, ServerBalancer>(
-                new DoneEvent(customer, this.getServer(),
-                        this.eventTime + this.customer.getServiceTime()),
-                newServerBalancer);
+                this.getServerNumber());
     }
 }

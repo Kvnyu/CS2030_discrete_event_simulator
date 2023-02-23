@@ -1,48 +1,54 @@
 import java.util.function.Supplier;
 
 class ArriveEvent extends Event {
-        private final Supplier<Double> serviceTimeSupplier;
+    private final Supplier<Double> serviceTimeSupplier;
 
-        // TODO: change serviceTimeSupplier to serviceTimeSupplier
-        ArriveEvent(Customer customer, Supplier<Double> serviceTimeSupplier) {
-                super(customer, LOW_PRIORITY);
-                this.serviceTimeSupplier = serviceTimeSupplier;
+    ArriveEvent(Customer customer, Supplier<Double> serviceTimeSupplier) {
+        super(customer, LOW_PRIORITY);
+        this.serviceTimeSupplier = serviceTimeSupplier;
+    }
+
+    ArriveEvent(Customer customer, Supplier<Double> serviceTimeSupplier, double eventTime) {
+        super(customer, false, LOW_PRIORITY, eventTime);
+        this.serviceTimeSupplier = serviceTimeSupplier;
+    }
+
+    @Override
+    Pair<Event, ServerBalancer> getNextEvent(ServerBalancer serverBalancer) {
+        if (serverBalancer.isThereAServerAvailable()) {
+            // Get server
+            Server availableServer = serverBalancer.getAvailableServer();
+            // Create new serveEvent with server and customer
+            ServeEvent serveEvent = new ServeEvent(this.getCustomer(),
+                    availableServer.getServerNumber(),
+                    this.getCustomer().getArrivalTime(), serviceTimeSupplier, false, false);
+            serverBalancer = serverBalancer.updateServer(availableServer);
+            return new Pair<Event, ServerBalancer>(serveEvent, serverBalancer);
+        } else if (serverBalancer.isThereServerWithSpaceInQueue()) {
+            // Create new serveEvent with server and customer
+            Server serverWithSpaceInQueue = serverBalancer.getServerWithSpaceInQueue();
+            WaitEvent waitEvent = new WaitEvent(this.customer,
+                    serverWithSpaceInQueue.getServerNumber(), this.eventTime,
+                    this.serviceTimeSupplier,
+                    false);
+            return new Pair<Event, ServerBalancer>(waitEvent, serverBalancer);
         }
+        return new Pair<Event, ServerBalancer>(new LeaveEvent(this.customer), serverBalancer);
+    }
 
-        @Override
-        Pair<Event, ServerBalancer> getNextEvent(ServerBalancer serverBalancer) {
-                if (serverBalancer.isThereAServerFreeAt(this.customer.getArrivalTime())) {
-                        System.out.println("event 1");
-                        Customer customerWithServiceTime = this.customer
-                                        .cloneWithServiceTime(this.serviceTimeSupplier.get());
-                        Pair<Server, ServerBalancer> serverWithBalancer = serverBalancer
-                                        .serve(customerWithServiceTime);
+    // // TODO: Change this name
+    // String formatDouble(Double number) {
+    // NumberFormat formatter = new DecimalFormat("#0.0");
+    // return formatter.format(number);
+    // }
 
-                        return new Pair<Event, ServerBalancer>(
-                                        new ServeEvent(customerWithServiceTime, serverWithBalancer.first(),
-                                                        customerWithServiceTime.getArrivalTime(), false),
-                                        serverWithBalancer.second());
-                } else if (serverBalancer.isThereServerWithSpaceInQueue()) {
-                        System.out.println("event 2");
-                        Pair<Server, ServerBalancer> serverWithBalancer = serverBalancer
-                                        .addToQueue(customer);
-                        Event waitEvent = new WaitEvent(customer, serverWithBalancer.first(), serviceTimeSupplier);
-                        System.out.println(waitEvent);
-                        return new Pair<Event, ServerBalancer>(new WaitEvent(
-                                        customer, serverWithBalancer.first(),
-                                        serviceTimeSupplier), serverWithBalancer.second());
-                }
-                return new Pair<Event, ServerBalancer>(new LeaveEvent(this.customer), serverBalancer);
-        }
+    @Override
+    public String toString() {
+        return String.format("%s %s arrives", this.getFormattedEventTime(),
+                this.getCustomer());
+    }
 
-        @Override
-        public String toString() {
-                return String.format("%s %s arrives", this.getCustomer()
-                                .getFormattedArrivalTime(),
-                                this.getCustomer());
-        }
-
-        double getEventTime() {
-                return this.getCustomer().getArrivalTime();
-        }
+    double getEventTime() {
+        return this.getCustomer().getArrivalTime();
+    }
 }

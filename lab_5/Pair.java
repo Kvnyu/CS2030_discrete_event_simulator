@@ -40,13 +40,6 @@ public class Pair<T, U> {
         return this.u;
     }
 
-    /**
-     * Returns a string representation of this pair enclosed in ({@code "()"}).  
-     * The two elements are separated by the characters {@code ", "} (comma and space).
-     * Elements are converted to strings as by {@link String#valueOf(Object)}.
-     *
-     * @return a string representation of this list
-     */
     @Override
     public String toString() {
         return "(" + this.t + ", " + this.u + ")";

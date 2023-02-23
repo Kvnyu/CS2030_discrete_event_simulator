@@ -1,2 +1,0 @@
-Priority:
-Time > Serve >= Done >= Leave > Arrive

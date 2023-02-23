@@ -75,17 +75,6 @@ public class PQ<E> {
         return new Pair<E,PQ<E>>(t, copy);
     }
 
-
-    /**
-     * Returns a string representation of this priority queue.  The string
-     * representation consists of a list of elements in the order they are
-     * returned by its iterator, enclosed in square brackets ({@code "[]"}).  
-     * Adjacent elements are separated by the characters {@code ", "} (comma and space).
-     * Elements are converted to strings as by {@link String#valueOf(Object)}.
-     *
-     * @return a string representation of this list
-     */
-    @Override
     public String toString() {
         return this.pq.toString();
     }

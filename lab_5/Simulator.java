@@ -21,62 +21,24 @@ class Simulator {
             double arrivalTime = customerPair.first();
 
             Customer customer = new Customer(arrivalTime, customerNumber);
-            queue = queue.add(new ArriveEvent(customer, customerPair.second()));
+            queue = queue.add(new ArriveEvent(customer,
+                    customerPair.second(), customer.getArrivalTime()));
             customerNumber += 1;
         }
 
         while (!queue.isEmpty()) {
-            System.out.println("--------new iter--------");
-            // Get the current highest priority event, print it
-            // Get the event that follows from this event, add it to the queue
-            // Arrive -> Serve -> Done -> Terminal
-            // Arrive -> Wait -> Serve -> Done -> Terminal
-            // Arrive -> Leave -> Terminal
-
+            // System.out.println("new iteration------------------");
             Pair<Event, PQ<Event>> pair = queue.poll();
             Event event = pair.first();
             queue = pair.second();
 
-            // TODO: Extract to function
-            ImList<Event> unexecutableEvents = new ImList<Event>();
-            while (!serverBalancer.canExecute(event)) {
-                unexecutableEvents = unexecutableEvents.add(event);
-                pair = queue.poll();
-                event = pair.first();
-                queue = pair.second();
-            }
+            // System.out.println(queue);
 
-            for (Event unexecutableEvent : unexecutableEvents) {
-                queue = queue.add(unexecutableEvent);
-            }
+            event.maybePrintEvent();
 
-            if (!event.isTerminalEvent() && event.canOutput()) {
-                System.out.println(event);
-            }
-
-            // Special queue
-            // specialQueue.poll() logic:
-            // If there is a free server, then check if there are any serveEvents for that
-            // server
-            // Get the serveEvent with the lowest customer number and return it.
-            // Can only mutate servers when getting the next event
-            // Can't change events once you add them to the queue...
-            // Serve events are different to other events in that we don't know what time
-            // they will execute
-            // TODO: Make wait event time Math.inf
-            // TODO: At start of each iteration, check if there is any server that is free
-            // If server is free, make event =
-            // this.getServerQueue(server).serveNextWaitEvent()
-            // DoneEvent.getNextEvent() returns a new ServeEvent?
-            // WaitEvent are stored in Server only
-
-            // TODO: Change the class signature of getNextEvent to require servers list
             Pair<Event, ServerBalancer> eventServers = event.getNextEvent(serverBalancer);
             Event nextEvent = eventServers.first();
             serverBalancer = eventServers.second();
-            // serverBalancer.checkWhichServersCanExecute();
-            // TODO: Create a new Terminal event attribute on Event, and TerminalEvent class
-            // that all terminal events return as "getNextEvent"
 
             if (!nextEvent.isTerminalEvent()) {
                 queue = queue.add(nextEvent);
